@@ -1,0 +1,16 @@
+{% block head %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'registration/style.css' %}" />
+{% endblock head %}
+
+{% block content %}
+</br></br>
+<center>
+<table>
+<tr><td><h1>Thank you for registering, <b>{{user}}</b></h1></td></tr>
+</tr><td><center><p>You are now logged in...</p></center></td></tr>
+</tr><td><center><a id="link" href="/">Go to site</a></center></td></tr>
+</table>
+</center>
+{% endblock %}
+

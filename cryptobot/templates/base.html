@@ -1,0 +1,9 @@
+<html>
+    <body>
+        {% block nav %}
+        <ul id="nav">
+            <li>{% block nav-about %}<a href="{% url 'registration:register' %}">Register</a>{% endblock %}</li>
+        </ul>
+        {% endblock %}
+    </body>
+</html>
