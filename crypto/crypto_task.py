@@ -10,7 +10,7 @@ from .bot import BotBase
 
 
 def run(logger):
-    print('I am running!')
+    logger.info('I am running!')
     eth_pln = BitBay('ETH', 'PLN')
     # btc_pln = BitBay('BTC', 'PLN')
 
