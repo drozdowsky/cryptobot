@@ -1,6 +1,6 @@
 import logging
 from decimal import Decimal
-from .models import Bot, Trade, CryptoModel
+from .models import Trade, CryptoModel
 
 
 logger = logging.getLogger('CRYPTO.BOT')

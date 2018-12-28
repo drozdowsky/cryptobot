@@ -46,13 +46,9 @@ class SignificanceOfTrends:
         return self.result.get_values()[-1][0]
 
     def get_value_ratio(self):
-        return (self.get_value_for_last_results()/100)*GT_SIGNIFICANCE
+        return (self.get_value_for_last_results()/100)*2.0
 
 
-def get_crypto_trend_ratio(crypto):
-    sot = SignificanceOfTrends(7, crypto)
+def get_crypto_trend_ratio(crypto, day=7):
+    sot = SignificanceOfTrends(day, crypto)
     return sot.get_value_ratio()
-
-
-def get_crypto_trend_ratio_with_pow(crypto):
-    return get_crypto_trend_ratio(crypto)**GT_POW

@@ -2,7 +2,7 @@ import logging
 import time
 from datetime import datetime
 
-from .response import Request, ServerUnavailable
+from response import Request, ServerUnavailable
 
 logger = logging.getLogger('MARKET.API')
 
@@ -26,7 +26,7 @@ class Market:
                 self._json = self._get_json()
             except ServerUnavailable:
                 logger.warning('Server unavailable!')
-                time.sleep(45)
+                raise
             else:
                 break
 

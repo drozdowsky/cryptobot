@@ -21,17 +21,19 @@ def get_or_create_crypto_model(long_name, short_name):
 
 class MarketHistoric(models.Model):
     crypto = models.ForeignKey(CryptoModel, null=False, on_delete=models.CASCADE)
-    value = models.IntegerField()
+    bids_value = models.FloatField()
+    asks_value = models.FloatField()
+    avg_transaction_value = models.FloatField()
     price = models.DecimalField(default=0.0, decimal_places=2, max_digits=19)
     response_json = JSONField()
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return '{}: {} at {}'.format(self.crypto.long_name, self.value,
+        return '{}: {} at {}'.format(self.crypto.long_name, self.price,
                                      self.date)
 
     def __sub__(self, other):
-        return abs(self.value - other.value)
+        return abs(self.price - other.price)
 
     class Meta:
         ordering = ('date',)
