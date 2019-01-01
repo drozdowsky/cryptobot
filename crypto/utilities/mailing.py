@@ -34,4 +34,3 @@ def send_email(smtp, port,
 
     server.sendmail(FROM, TO, message.as_string())
     server.quit()
-

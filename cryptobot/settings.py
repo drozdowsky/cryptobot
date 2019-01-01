@@ -31,7 +31,7 @@ with open('{}/secret_key'.format(os.path.expanduser('~'))) as f:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = local_settings.DEBUG
 
-ALLOWED_HOSTS = ['172.104.153.158', '127.0.0.1']
+ALLOWED_HOSTS = ['45.33.34.164', '127.0.0.1']
 
 
 # Application definition
@@ -83,8 +83,12 @@ WSGI_APPLICATION = 'cryptobot.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'crypto',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 

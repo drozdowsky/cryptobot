@@ -24,7 +24,7 @@ class MarketHistoric(models.Model):
     bids_value = models.FloatField()
     asks_value = models.FloatField()
     avg_transaction_value = models.FloatField()
-    price = models.DecimalField(default=0.0, decimal_places=2, max_digits=19)
+    price = models.DecimalField(default=1.0, decimal_places=2, max_digits=19)
     response_json = JSONField()
     date = models.DateTimeField(auto_now_add=True)
 
@@ -42,14 +42,12 @@ class MarketHistoric(models.Model):
 
 class SocialHistoric(models.Model):
     crypto = models.ForeignKey(CryptoModel, null=False, on_delete=models.CASCADE)
-    value = models.IntegerField()
+    gtrends_top_7d = models.FloatField()
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return '{}: {} at {}'.format(self.crypto.long_name, self.value, self.date)
-
-    def __sub__(self, other):
-        return abs(self.value - other.value)
+        return '{}: {} at {}'.format(self.crypto.long_name, self.gtrends_top_7d,
+                                     self.date)
 
     class Meta:
         ordering = ('date',)
@@ -99,8 +97,10 @@ class RuleSet(models.Model):
 class Rule(models.Model):
     BELOW = 'BEL'
     ABOVE = 'ABO'
-    CHANGE = 'CNG'
-    CHANGE_PERC = 'CNP'
+    CHANGE_ABOVE = 'CGA'
+    CHANGE_BELOW = 'CGB'
+    CHANGE_PERC_ABOVE = 'CPA'
+    CHANGE_PERC_BELOW = 'CPB'
     MAX_VALUE_PERC = 'MVP'
     MAX_VALUE = 'MVE'
     AFTER_HOURS = 'AHS'
@@ -112,8 +112,10 @@ class Rule(models.Model):
     RULE_TYPES = [
         (BELOW, 'below'),
         (ABOVE, 'above'),
-        (CHANGE, 'change'),
-        (CHANGE_PERC, 'change_perc'),
+        (CHANGE_ABOVE, 'change_above'),
+        (CHANGE_BELOW, 'change_below'),
+        (CHANGE_PERC_ABOVE, 'change_perc_above'),
+        (CHANGE_PERC_BELOW, 'change_perc_below'),
         (MAX_VALUE_PERC, 'max_value_perc'),
         (MAX_VALUE, 'max_value'),
         (AFTER_HOURS, 'after_hours'),
@@ -122,7 +124,9 @@ class Rule(models.Model):
         (SBOT_ABOVE, 'social_bot_above'),
         (SBOT_BELOW, 'social_bot_below'),
     ]
+    RULE_TYPES_DICT = {sc: full_name for sc, full_name in RULE_TYPES}
 
+    #  unique_together = ('rule_set', 'value', 'type_of_rule')
     rule_set = models.ForeignKey(RuleSet, null=False, on_delete=models.CASCADE,
                                  related_name='rules')
     value = models.FloatField(null=False)
@@ -138,7 +142,7 @@ class Trade(models.Model):
     date = models.DateTimeField(auto_now=True)
     type_of_trade = models.CharField(max_length=1, choices=TRADE_TYPES)
     amount = models.DecimalField(default=0.0, decimal_places=8, max_digits=19)
-    price = models.DecimalField(default=0.0, decimal_places=2, max_digits=19)
+    price = models.DecimalField(default=1.0, decimal_places=2, max_digits=19)
     rule_set = models.ForeignKey(RuleSet, related_name='trades', null=True,
                                  on_delete=models.SET_NULL)
     crypto = models.ForeignKey(CryptoModel, null=False, on_delete=models.CASCADE)
