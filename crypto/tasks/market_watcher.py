@@ -1,5 +1,7 @@
 from decimal import Decimal
 
+from django.utils import timezone
+
 from crypto.market.api import BitBay
 from crypto.models import get_or_create_crypto_model, MarketHistoric
 
@@ -25,3 +27,73 @@ def run_market_watcher_task(logger):
         return None
 
     return mh
+
+
+
+class MarketWatcherParser:
+    def __init__(self, mh, logger):
+        """
+        :param mh: market historic
+        """
+        self.mh = mh
+        self.logger = logger
+
+    def run(self):
+        pass
+
+    def get_last_value(self):
+        return self.mh.price
+
+    def get_ratio_bids_asks(self):
+        try:
+            ratio = self.mh.bids_value/self.mh.asks_value
+        except ZeroDivisionError:
+            raise Exception("Division by zero in market_watcher")
+        else:
+            return ratio
+
+    def get_ratio_bids_asks_pow(self):
+        return self.get_ratio_bids_asks()**0.25  # FIXME: hardcoded_constant
+
+    def get_value_from_past(self, _timedelta):
+        try:
+            crypto = MarketHistoric.objects.filter(date__gte=timezone.now()-_timedelta-timezone.timedelta(minutes=5),
+                                                   date__lte=timezone.now()-_timedelta).latest('date')
+        except Exception as e:
+            value = self.get_last_value()
+            self.logger.warning('get_value_from_past [E]: {} - returning {}'.format(str(e), value))
+            return value
+        else:
+            return crypto.price
+
+    def get_ratio_from_past(self, _timedelta):
+        _value = self.get_value_from_past(_timedelta)
+        return ((self.get_last_value()-_value)/_value)*100
+
+    def get_ratio_multiplier(self, divider=22, **timedelta):
+        return 1/max(min(1+(self.get_ratio_from_past(timezone.timedelta(**timedelta))/divider), 2.0), 0.5)
+
+    def get_market_bot_multiplier(self):
+        return self.get_ratio_bids_asks_pow() \
+               * self.get_ratio_multiplier(22, days=7)\
+               * self.get_ratio_multiplier(16, days=1)
+
+    def process_crypto(self):
+        return {'Ratio from 1h ago': self.get_ratio_multiplier(12, hours=7),  # FIXME: hardcoded_constant - 12
+                'Ratio from 24h ago:': self.get_ratio_multiplier(16, days=1),  # FIXME: hardcoded_constant - 16
+                'Ratio from 7d ago': self.get_ratio_multiplier(22, days=7),   # FIXME: hardcoded_constant - 22
+                'Ratio bid/ask pow': self.get_ratio_bids_asks_pow(),
+                'Crypto multiplier': self.get_market_bot_multiplier()
+                }
+
+    # ideas
+    # mnozenie ratio
+    # 30min, 1h, 2h, 12h, 24h, 3days, 7days
+    # IDEA: If crypto multiplier > 1.5 - try to sold
+    #       If crypto multiplier < 0.5 - try to buy
+    #
+    #       Buy-sell decision making: Let's make 'class' that:
+    #           # for buy decision-making lets create function that return ratio of:
+                    # profit ratio (greedy %)
+                    # our portfolio ratio COINS/FIAT should be 75%/25% MAX, MIN 50%/50% for crypto, (SHOULD BE SOME EXCEPTIONS FOR BIG PROFITS)
+                    # AGRESSIVNESS OF BOT RATIO

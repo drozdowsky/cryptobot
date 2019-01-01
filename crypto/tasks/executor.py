@@ -2,16 +2,16 @@ from crypto.utilities import RuleChecker
 from crypto.models import RuleSet, get_or_create_crypto_model
 
 
-def run_executor_task(logger, mh, sh):
+def run_executor_task(logger, mp, sp):
     # FIXME: hardcoded_crypto
     crypto_model = get_or_create_crypto_model('Ethereum', 'ETH')
-    Executor(mh, sh, crypto_model, logger).run()
+    Executor(mp, sp, crypto_model, logger).run()
 
 
 class Executor(object):
-    def __init__(self, market_hist, social_hist, crypto, logger):
-        self.mh = market_hist
-        self.sh = social_hist
+    def __init__(self, market_parser, social_parser, crypto, logger):
+        self.mp = market_parser
+        self.sp = social_parser
         self.crypto = crypto
         self.logger = logger
 
@@ -20,7 +20,7 @@ class Executor(object):
             .select_related('owner', 'rules')
 
         for rs in qs:
-            rc = RuleChecker(self.mh, self.sh, self.crypto, rs)
+            rc = RuleChecker(self.mp, self.sp, self.crypto, rs)
             try:
                 _result = rc.run()
             except Exception as ex:

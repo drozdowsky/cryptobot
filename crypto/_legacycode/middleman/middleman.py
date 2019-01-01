@@ -48,7 +48,7 @@ class Middleman:
     def get_value_from_past(self, _timedelta):
         try:
             crypto = Cryptocurrency.objects.filter(date__gte=timezone.now()-_timedelta-timezone.timedelta(minutes=5),
-                                                   date__lte=timezone.now()-_timedelta).order_by('date')[:1][0]
+                                                   date__lte=timezone.now()-_timedelta).latest('date')
         except Exception as e:
             value = self.get_last_value()
             logger.warning('get_value_from_past [E]: {} - returning {}'.format(str(e), value))
@@ -69,7 +69,7 @@ class Middleman:
     def get_ratio_multiplier(self, divider=22, **timedelta):
         return 1/max(min(1+(self.get_ratio_from_past(timezone.timedelta(**timedelta))/divider), 2.0), 0.5)
 
-    def get_crypto_bot_multiplier(self):
+    def get_market_bot_multiplier(self):
         return self.get_crypto_trend_ratio_pow() * self.get_ratio_bids_asks_pow() \
                * self.get_ratio_multiplier(DIVIDER_FOR_WEEK_RATIO, days=7)\
                * self.get_ratio_multiplier(DIVIDER_FOR_DAY_RATIO, days=1)
@@ -80,7 +80,7 @@ class Middleman:
                 'Ratio from 24h ago:': self.get_ratio_multiplier(DIVIDER_FOR_WEEK_RATIO, days=1),
                 'Ratio from 7d ago': self.get_ratio_multiplier(DIVIDER_FOR_WEEK_RATIO, days=7),
                 'Ratio bid/ask pow': self.get_ratio_bids_asks_pow(),
-                'Crypto multiplier': self.get_crypto_bot_multiplier()
+                'Crypto multiplier': self.get_market_bot_multiplier()
                 }
 
     # mnozenie ratio

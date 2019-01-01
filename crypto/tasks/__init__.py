@@ -5,7 +5,7 @@ from crypto.tasks import market_watcher, social_watcher, executor
 LOGGER = get_task_logger(__name__)
 
 
-def fetch_and_send():
+def fetch_market_data():
     _mh = market_watcher.run_market_watcher_task(LOGGER)
     if _mh:
         pass

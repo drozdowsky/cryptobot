@@ -14,16 +14,16 @@ app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
-    # fetch market_watcher & run executor
-    sender.add_periodic_task(120.0, fetch_and_send.s(), name='fetch_and_send')
-    # fetch market_watcher & run executor
+    # fetch market_watcher
+    sender.add_periodic_task(120.0, fetch_market_data.s(), name='fetch_market_data')
+    # fetch market_watcher
     sender.add_periodic_task(300.0, fetch_social_data.s(), name='fetch_social_data')
 
 
 @app.task()
-def fetch_and_send():
+def fetch_market_data():
     from crypto import tasks
-    tasks.fetch_and_send()
+    tasks.fetch_market_data()
 
 
 @app.task()
