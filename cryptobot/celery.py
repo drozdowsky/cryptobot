@@ -18,6 +18,8 @@ def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(120.0, fetch_market_data.s(), name='fetch_market_data')
     # fetch market_watcher
     sender.add_periodic_task(300.0, fetch_social_data.s(), name='fetch_social_data')
+    # run
+    sender.add_periodic_task(120.0, run_executor.s(), name='run_executor')
 
 
 @app.task()
@@ -30,3 +32,8 @@ def fetch_market_data():
 def fetch_social_data():
     from crypto import tasks
     tasks.fetch_social_data()
+
+@app.task()
+def run_executor():
+    from crypto import tasks
+    tasks.run_executor()

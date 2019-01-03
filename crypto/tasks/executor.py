@@ -1,5 +1,11 @@
-from crypto.utilities import RuleChecker
-from crypto.models import RuleSet, get_or_create_crypto_model
+from datetime import timedelta
+
+from crypto.models import MarketHistoric, RuleSet, Trade, \
+    get_or_create_crypto_model
+from crypto.utilities.mailing import MailGenerator
+from crypto.utilities.rule_checker import RuleChecker
+
+from django.utils import timezone
 
 
 def run_executor_task(logger, mp, sp):
@@ -14,6 +20,9 @@ class Executor(object):
         self.sp = social_parser
         self.crypto = crypto
         self.logger = logger
+        self.past_price = MarketHistoric.objects.filter(
+            date__lte=timezone.now()-timedelta(hours=24)
+        ).latest('date')
 
     def run(self):
         qs = RuleSet.objects.filter(crypto=self.crypto) \
@@ -27,7 +36,20 @@ class Executor(object):
                self.logger.warning(str(ex))
             else:
                 if _result:
-                    self.process_result(_result)
+                    self.process_result(_result, rs)
 
-    def process_result(self, result):
-        pass
+    def process_result(self, result, rs):
+        # FIXME: trades_here!
+        type_of_ruleset = rs.type_of_ruleset
+        try:
+            result = MailGenerator(self.crypto, rs, self.mp, self.sp, result,
+                                   self.past_price, self.logger).run()
+        except Exception as ex:
+            self.logger('process_result {}'.format(str(ex)))
+        else:
+            # exit 0 == success
+            if not result:
+                Trade.objects.create(type_of_trade=type_of_ruleset,
+                                     price=self.mp.mh.price,
+                                     rule_set=rs,
+                                     crypto=self.crypto)
