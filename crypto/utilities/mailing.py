@@ -80,16 +80,65 @@ class MailGenerator:
         body_list = [
             '<b>{}</b>:'.format(str.upper(self.crypto.long_name)),
 
-            '{0} price: {1} {2}'.format(
+            # FIXME: hardcoded_currency
+            '{0} price: {1}PLN {2}'.format(
                 self.crypto.short_name, self.mp.mh.price, yesterday_price
             ),
         ]
 
-        for key in self.results:
-            # key == BEL, ABO, CGA etc. (taken from models.Rule)
-            body_list.append(key)
+        self.add_format_from_rule_checker(body_list)
 
         return title_list, body_list
+
+    def add_format_from_rule_checker(self, body_list):
+        after_hours_date = self.results.get('AHS')
+        if after_hours_date:
+            body_list.append('From {} to {}'.format(
+                str(after_hours_date.replace(microsecond=0)),
+                get_now()
+            ))
+
+        below, above = self.results.get('BEL'), self.results.get('ABO')
+        if below or above:
+            body_list.append('Price went from {}PLN to {}PLN'.format(
+                below or above, self.mp.mh.price
+            ))
+
+        below_c, above_c = self.results.get('CGA'), self.results.get('CGB')
+        if below_c or above_c:
+            body_list.append('Price difference: {}PLN'.format(
+                below_c or above_c
+            ))
+
+        below_c_p, above_c_p = self.results.get('CPA'), self.results.get('CPB')
+        if below_c_p or above_c_p:
+            body_list.append('Price difference: {} %'.format(
+                below_c_p or above_c_p
+            ))
+
+        if self.rs.type_of_ruleset != 'E':
+            mvp, mve = self.results.get('MVP'), self.results.get('MVE')
+            _change_list = []
+            if mve:
+                # FIXME: hardcoded_crypto
+                _change_list.append('[{}ETH]'.format(str(mve)))
+            if mve:
+                _change_list.append('[{}%]'.format(str(mvp)))
+
+            if _change_list:
+                body_list.append("Using {} of user's wallet".format(
+                    ' '.join(_change_list))
+                )
+
+        # market bot _above, _below
+        mb_a, mb_b = self.results.get('MBA'), self.results.get('MBB')
+        if mb_a or mb_b:
+            body_list.append('Market Bot: {}'.format(mb_a or mb_b))
+
+        # social bot _above, _below
+        sb_a, sb_b = self.results.get('SBA'), self.results.get('SBB')
+        if sb_a or sb_b:
+            body_list.append('Social Bot: {}'.format(sb_a or sb_b))
 
     def get_past_price(self):
         if not self.past_price:
