@@ -1,0 +1,32 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <link rel="stylesheet" type="text/css" href="{% static 'bootstrap-grid.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.css' %}" />
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+          <a class="navbar-brand" href="/">CryptoBot</a>
+
+          {% if user.is_authenticated %}
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+              </li>
+            </ul>
+          {% endif %}
+        </nav>
+
+        {% block head %}
+        {% endblock head %}
+    </head>
+
+    <body>
+        {% block content %}
+        {% endblock %}
+    </body>
+</html>

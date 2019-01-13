@@ -1,18 +1,13 @@
-{% block head %}
-{% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'registration/style.css' %}" />
-{% endblock head %}
+{% extends 'cryptobot/base.html' %}
 
 {% block content %}
-
 {% if not user.is_authenticated %}
-
 <form method="post" action="{% url 'registration:login' %}">
 {% csrf_token %}
 <center>
 <br>
 <br>
-<h1>Sign in</h1>
+<h3>Sign in</h3>
 <table>
 <tr>
 	<td><label for="id_username"><p>Username:</p></label></td> <td><input type="text" name="username" required maxlength="254" autofocus id="id_username" /></td>
@@ -21,7 +16,7 @@
 	<td><label for="id_password"><p>Password:</p></label></td> <td><input type="password" name="password" required id="id_password" /></td>
 </tr>
 
-<tr><td></td><td class="text_allign_right"><input type="submit" value="login" /></td></tr>
+<tr><td></td><td class="text_allign_right"><input type="submit" value="Login" /></td></tr>
 </table>
 <a href="{% url 'registration:register' %}">Click here to sign up!</a>
 </center>

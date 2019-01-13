@@ -6,7 +6,7 @@ GT_SIGNIFICANCE = 1.4
 GT_POW = 0.25
 
 
-class DaysTrend:
+class GoogleTrends:
     TIME_MAPPING = {1: 'now 1-d',
                     7: 'now 7-d',
                     30: 'today 1-m',
@@ -36,7 +36,7 @@ class SignificanceOfTrends:
         self.crypto = crypto
 
     def build_results(self):
-        self.result = DaysTrend([self.crypto.long_name], self.day).get_interest()
+        self.result = GoogleTrends([self.crypto.long_name], self.day).get_interest()
         return self.result
 
     def get_value_for_last_results(self):

@@ -84,7 +84,8 @@ class RuleSet(models.Model):
     ]
 
     name = models.CharField(max_length=128)
-    crypto = models.ForeignKey(CryptoModel, null=False, on_delete=models.CASCADE)
+    crypto = models.ForeignKey(CryptoModel, null=False, on_delete=models.CASCADE,
+                               related_name="rulesets")
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, null=False,
                               on_delete=models.CASCADE)
     type_of_ruleset = models.CharField(max_length=1, choices=RULESET_TYPES,

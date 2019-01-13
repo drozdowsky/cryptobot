@@ -1,10 +1,11 @@
-from django.conf.urls import url
-from . import views
+from django.urls import path
+from .views import *
 
 app_name = 'crypto'
 
 
 urlpatterns = [
-	# nothing yet
-	# url(r'^something/$', view_function_or_as_view(), name='main')
+    path(r'history/<str:crypto>/', get_crypto_history, name='history'),
+    path(r'rulesets/<str:crypto>/', RulesetsView.as_view(), name='rulesets'),
+    path(r'ruleset/add_or_edit/<str:crypto>/<int:rulset_id>/', AddEditRulesetView.as_view(), name='add_edit_ruleset')
 ]

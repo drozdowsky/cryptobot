@@ -19,13 +19,13 @@ def fetch_social_data():
 def run_executor():
     mh = MarketHistoric.objects.latest('date')
 
-    if not mh or mh.date+timedelta(minutes=5) > timezone.now():
+    if not mh or mh.date+timedelta(minutes=5) < timezone.now():
         LOGGER.error("run_executor: no recent MarketHistoric, task did not started")
         return 1
 
     sh = SocialHistoric.objects.latest('date')
 
-    if not sh or sh.date+timedelta(minutes=10) > timezone.now():
+    if not sh or sh.date+timedelta(minutes=10) < timezone.now():
         LOGGER.error("run_executor: no recent SocialHistoric, task did not started")
         return 2
 

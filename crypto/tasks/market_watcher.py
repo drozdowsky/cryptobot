@@ -38,9 +38,6 @@ class MarketWatcherParser:
         self.mh = mh
         self.logger = logger
 
-    def run(self):
-        pass
-
     def get_last_value(self):
         return self.mh.price
 

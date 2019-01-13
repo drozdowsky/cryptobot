@@ -22,13 +22,15 @@ class Executor(object):
         self.logger = logger
         self.past_price = MarketHistoric.objects.filter(
             date__lte=timezone.now()-timedelta(hours=24)
-        ).latest('date')
+        ).order_by('-date').first() or self.mp.mh.price
 
     def run(self):
         qs = RuleSet.objects.filter(crypto=self.crypto) \
-            .select_related('owner', 'rules')
+            .select_related('owner').prefetch_related('rules')
 
+        self.logger.info('[EXEC] Starting processing rulesets!')
         for rs in qs:
+            self.logger.info('[EXEC] ruleset(%d): %s', rs.id, rs.type_of_ruleset)
             rc = RuleChecker(self.mp, self.sp, self.crypto, rs)
             try:
                 _result = rc.run()
@@ -37,6 +39,8 @@ class Executor(object):
             else:
                 if _result:
                     self.process_result(_result, rs)
+
+        self.logger.info('[EXEC] Finished processing rulesets!')
 
     def process_result(self, result, rs):
         # FIXME: trades_here!

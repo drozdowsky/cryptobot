@@ -2,7 +2,7 @@ import logging
 import time
 from datetime import datetime
 
-from response import Request, ServerUnavailable
+from crypto.market.response import Request, ServerUnavailable
 
 logger = logging.getLogger('MARKET.API')
 
