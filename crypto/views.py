@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.views import View
+from django import forms
 
 from crypto.models import CryptoModel, RuleSet
 from crypto.utilities import get_mh_change, get_mh_from_past
@@ -59,30 +60,61 @@ class RulesetsView(View):
             owner=self.request.user
         ).order_by('name')
 
-        response_data = {'rulesets': rs}
+        response_data = {'rulesets': rs, 'crypto': crypto}
         return render(request, self.template_name, response_data)
 
 
 class AddEditRulesetView(View):
     template_name = "crypto/add_edit_ruleset.html"
 
-    def get(self, request, crypto, rulset_id):
+    class EditForm(forms.Form):
+        name = forms.CharField(max_length=128)
+        rtype = forms.ChoiceField(
+            choices=(
+                ('email', 'email'),
+                ('buy', 'buy'),
+                ('sell', 'sell')
+            )
+        )
+
+    def get(self, request, crypto, ruleset_id):
         if not self.request.user.is_authenticated:
             return HttpResponseRedirect(reverse('registration:login'))
 
-        response_data = {'name': '', 'type': '', 'crypto': crypto}
-        if rulset_id:
+        response_data = {
+            'header': 'Create new ruleset',
+            'crypto': crypto,
+            # mock
+            'ruleset': {
+                'name': '',
+                'id': 0,
+                'type_of_ruleset': ''
+            }
+        }
+
+        if ruleset_id:
             try:
                 rs = RuleSet.objects.get(
-                    id=rulset_id,
+                    id=ruleset_id,
                     crypto=crypto.capitalize(),
                     owner=self.request.user
                 ).order_by('name')
-            # add DoesNotExist to pyling pls
+            # TODO: add DoesNotExist to pyling pls
             except RuleSet.DoesNotExist:
                 pass
             else:
-                response_data['name'] = rs.name
-                response_data['type'] = rs.type_of_ruleset
+                response_data['header'] = 'Edit'
+                response_data['ruleset'] = rs
 
         return render(request, self.template_name, response_data)
+
+    def post(self, request, crypto, ruleset_id):
+        if not self.request.user.is_authenticated:
+            return HttpResponseRedirect(reverse('registration:login'))
+
+        form = self.EditForm(request.POST)
+        if form.is_valid():
+            # TODO: handle adding data
+            return HttpResponseRedirect(reverse('crypto:rulesets', args=[crypto]))
+
+        return render(request, self.template_name)

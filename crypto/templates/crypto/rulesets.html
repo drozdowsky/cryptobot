@@ -1,0 +1,32 @@
+{% extends 'cryptobot/base.html' %}
+{% block head %}
+{% endblock head %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <table class="table">
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Name</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col">Manage</th>
+                <th scope="col">Rules</th>
+            </tr>
+        {% for ruleset in rulesets %}
+            <tr>
+                <td></td>
+                <td><b>{{ ruleset.name }}</b></td>
+                <td></td>
+                <td></td>
+                <td><a class="btn btn-light" href="{% url 'crypto:history' crypto.name %}" role="button">Execution Log</a> <a
+                        class="btn btn-light" href="{% url 'crypto:add_edit_ruleset' crypto ruleset.id %}"
+                        role="button">Edit ruleset</a></td>
+                <td><a class="btn btn-light" href="{% url 'crypto:add_edit_ruleset' crypto ruleset.id %}"
+                        role="button">Edit rules</a></td>
+            </tr>
+        {% endfor %}
+        </table>
+        <a class="btn btn-secondary float-right m-2" href="{% url 'crypto:add_edit_ruleset' crypto 0 %}" role="button">Add ruleset</a>
+    {% endif %}
+{% endblock %}
