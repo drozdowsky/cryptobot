@@ -96,9 +96,9 @@ class AddEditRulesetView(View):
             try:
                 rs = RuleSet.objects.get(
                     id=ruleset_id,
-                    crypto=crypto.capitalize(),
+                    crypto__long_name=crypto.capitalize(),
                     owner=self.request.user
-                ).order_by('name')
+                )
             # TODO: add DoesNotExist to pyling pls
             except RuleSet.DoesNotExist:
                 pass
@@ -114,7 +114,31 @@ class AddEditRulesetView(View):
 
         form = self.EditForm(request.POST)
         if form.is_valid():
-            # TODO: handle adding data
-            return HttpResponseRedirect(reverse('crypto:rulesets', args=[crypto]))
+            crypto = CryptoModel.objects.get(long_name=crypto.capitalize())
+            form_name = form.cleaned_data['name']
+            form_rtype = form.cleaned_data['rtype'].capitalize()[0]
 
-        return render(request, self.template_name)
+            if ruleset_id:
+                try:
+                    rs = RuleSet.objects.get(
+                        id=int(ruleset_id),
+                        owner=self.request.user,
+                        crypto=crypto
+                    )
+                    rs.name = form_name
+                    rs.type_of_ruleset = form_rtype
+                    rs.save()
+                except Exception as e:
+                    print(e)
+            else:
+                try:
+                    RuleSet.objects.create(
+                        name=form_name,
+                        owner=self.request.user,
+                        crypto=crypto,
+                        type_of_ruleset=form_rtype
+                    )
+                except Exception as e:
+                    print(e)
+
+        return HttpResponseRedirect(reverse('crypto:rulesets', args=[crypto.long_name]))

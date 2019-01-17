@@ -19,11 +19,10 @@
                 <td><b>{{ ruleset.name }}</b></td>
                 <td></td>
                 <td></td>
-                <td><a class="btn btn-light" href="{% url 'crypto:history' crypto.name %}" role="button">Execution Log</a> <a
+                <td><a class="btn btn-light" href="" role="button">Execution Log</a> <a
                         class="btn btn-light" href="{% url 'crypto:add_edit_ruleset' crypto ruleset.id %}"
                         role="button">Edit ruleset</a></td>
-                <td><a class="btn btn-light" href="{% url 'crypto:add_edit_ruleset' crypto ruleset.id %}"
-                        role="button">Edit rules</a></td>
+                <td><a class="btn btn-light" href="" role="button">Edit rules</a></td>
             </tr>
         {% endfor %}
         </table>
