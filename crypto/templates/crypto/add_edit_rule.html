@@ -1,0 +1,43 @@
+{% extends 'cryptobot/base.html' %}
+
+{% block header %}
+/rules/{{ruleset.name}}/{{ctype}}/{{ rule.type_of_rule }}
+{% endblock header %}
+
+{% block content %}
+<center>
+    <div style="width:45%;min_width:400px;">
+    <form method="post" action="{% url 'crypto:add_edit_rule' crypto ruleset.id rule.id %}">
+        {% csrf_token %}
+        <h2>{{ crypto }}'s {{ruleset.name}}</h2><h3>{{ header }}</h3>
+        <table class="table">
+            <tr>
+                <td><label for="id_rtype"><p>Type of rule:</p></label></td>
+                <td>
+                     <select name="rtype">
+                         {% for option, desc in rule_types %}
+                             <option value="{{ option }}">{{ desc }}</option>
+                         {% endfor %}
+                    </select> 
+                </td>
+            </tr>
+            <tr>
+                <td style="border-top: none;">
+                    <label for="id_value"><p>Value:</p></label>
+                </td>
+                <td style="border-top: none;">
+                    <input type="text" name="value" required maxlength="10" autofocus id="id_value" value="{{ rule.value }}"/>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <a class="btn btn-light" href="{% url 'crypto:rules' crypto ruleset.id %}">Back</a> 
+                    <input class="btn btn-dark" type="submit" value="Submit" />
+                </td>
+            </tr>
+        </table>
+    </form>
+    </div>
+</center>
+{% endblock %}

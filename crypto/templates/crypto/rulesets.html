@@ -2,6 +2,11 @@
 {% block head %}
 {% endblock head %}
 
+{% block header %}
+/rulesets/{{crypto}}
+{% endblock header %}
+
+
 {% block content %}
     {% if user.is_authenticated %}
         <table class="table">
@@ -19,13 +24,20 @@
                 <td><b>{{ ruleset.name }}</b></td>
                 <td></td>
                 <td></td>
-                <td><a class="btn btn-light" href="" role="button">Execution Log</a> <a
+                <td>
+                    <a class="btn btn-light" href="{% url 'crypto:execution_log' crypto ruleset.id %}" role="button">Execution Log</a> <a
+                        class="btn btn-light" href="{% url 'crypto:remove_ruleset' crypto ruleset.id %}"
+                        role="button">Remove</a> <a
                         class="btn btn-light" href="{% url 'crypto:add_edit_ruleset' crypto ruleset.id %}"
-                        role="button">Edit ruleset</a></td>
-                <td><a class="btn btn-light" href="" role="button">Edit rules</a></td>
+                        role="button">Edit</a> 
+                </td>
+                <td><a class="btn btn-dark" href="{% url 'crypto:rules' crypto ruleset.id %}" role="button">Edit rules</a></td>
             </tr>
         {% endfor %}
         </table>
-        <a class="btn btn-secondary float-right m-2" href="{% url 'crypto:add_edit_ruleset' crypto 0 %}" role="button">Add ruleset</a>
+        <div>
+        <a class="btn btn-success float-right m-2" href="{% url 'crypto:add_edit_ruleset' crypto 0 %}" role="button">Add ruleset</a>
+        <a class="btn btn-secondary float-left m-2" href="/" role="button">Go back</a>
+        </div>
     {% endif %}
 {% endblock %}

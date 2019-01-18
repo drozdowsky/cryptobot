@@ -1,0 +1,38 @@
+{% extends 'cryptobot/base.html' %}
+{% load crypto_extras %}
+{% block head %}
+{% endblock head %}
+
+{% block header %}
+/rules/{{ruleset.name}}
+{% endblock header %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <table class="table">
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Type</th>
+                <th scope="col">Value</th>
+                <th scope="col"></th>
+                <th scope="col">Manage</th>
+            </tr>
+        {% for rule in rules %}
+            <tr>
+                <td></td>
+                <td><b>{{ rule_types|hash:rule.type_of_rule }}</b></td>
+                <td><b>{{ rule.value }}</b></td>
+                <td></td>
+                <td>
+                    <a class="btn btn-light" href="" role="button">Remove</a>              
+                    <a class="btn btn-light" href="{% url 'crypto:add_edit_rule' crypto rule.rule_set_id rule.id %}" role="button">Edit</a>  
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+        <div>
+            <a class="btn btn-success float-right m-2" href="{% url 'crypto:add_edit_rule' crypto ruleset.id 0 %}" role="button">Add new rule</a>
+            <a class="btn btn-secondary float-left m-2" href="{% url 'crypto:rulesets' crypto %}" role="button">Go back</a>
+        </div>
+    {% endif %}
+{% endblock %}

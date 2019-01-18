@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.views import View
 from django import forms
 
-from crypto.models import CryptoModel, RuleSet
+from crypto.models import CryptoModel, RuleSet, Rule, Trade, MarketHistoric
 from crypto.utilities import get_mh_change, get_mh_from_past
 
 
@@ -89,7 +89,8 @@ class AddEditRulesetView(View):
                 'name': '',
                 'id': 0,
                 'type_of_ruleset': ''
-            }
+            },
+            'ctype': 'new',
         }
 
         if ruleset_id:
@@ -105,6 +106,7 @@ class AddEditRulesetView(View):
             else:
                 response_data['header'] = 'Edit'
                 response_data['ruleset'] = rs
+                response_data['ctype'] = 'edit'
 
         return render(request, self.template_name, response_data)
 
@@ -121,7 +123,7 @@ class AddEditRulesetView(View):
             if ruleset_id:
                 try:
                     rs = RuleSet.objects.get(
-                        id=int(ruleset_id),
+                        id=ruleset_id,
                         owner=self.request.user,
                         crypto=crypto
                     )
@@ -142,3 +144,207 @@ class AddEditRulesetView(View):
                     print(e)
 
         return HttpResponseRedirect(reverse('crypto:rulesets', args=[crypto.long_name]))
+
+
+class RemoveRulesetView(View):
+    template_name = "crypto/remove_ruleset.html"
+
+    def get(self, request, crypto, ruleset_id):
+        if not self.request.user.is_authenticated:
+            return HttpResponseRedirect(reverse('registration:login'))
+
+        response_data = {
+            'header': 'Remove',
+            'crypto': crypto,
+            # mock
+            'ruleset': {
+                'name': '',
+                'id': 0
+            },
+        }
+
+        try:
+            rs = RuleSet.objects.get(
+                id=ruleset_id,
+                crypto__long_name=crypto.capitalize(),
+                owner=self.request.user
+            )
+        # TODO: add DoesNotExist to pylint pls
+        except RuleSet.DoesNotExist:
+            return HttpResponseRedirect(reverse('crypto:rulesets', args=[crypto.long_name]))
+        else:
+            response_data['ruleset']['name'] = rs.name
+            response_data['ruleset']['id'] = rs.id
+
+        return render(request, self.template_name, response_data)
+
+    def post(self, request, crypto, ruleset_id):
+        if not self.request.user.is_authenticated:
+            return HttpResponseRedirect(reverse('registration:login'))
+
+        try:
+            rs = RuleSet.objects.get(
+                id=ruleset_id,
+                owner=self.request.user,
+                crypto__long_name=crypto
+            ).delete()
+        except RuleSet.DoesNotExist:
+            pass
+
+        return HttpResponseRedirect(reverse('crypto:rulesets', args=[crypto]))
+
+
+class RulesView(View):
+    template_name = "crypto/rules.html"
+
+    def get(self, request, crypto, ruleset_id):
+        if not self.request.user.is_authenticated:
+            return HttpResponseRedirect(reverse('registration:login'))
+
+        rules = Rule.objects.filter(
+            rule_set__crypto__long_name=crypto.capitalize(),
+            rule_set__owner=self.request.user,
+            rule_set_id=ruleset_id
+        ).order_by('id')
+
+        response_data = {
+            'rules': rules,
+            'crypto': crypto,
+            'ruleset': RuleSet.objects.get(id=ruleset_id, owner=self.request.user),
+            'rule_types': {sc: desc for sc, desc in Rule.RULE_DESC}
+        }
+        return render(request, self.template_name, response_data)
+
+
+class AddEditRuleView(View):
+    template_name = "crypto/add_edit_rule.html"
+
+    class EditForm(forms.Form):
+        rtype = forms.ChoiceField(
+            choices=Rule.RULE_TYPES
+        )
+        value = forms.FloatField()
+
+    def get(self, request, crypto, ruleset_id, rule_id, **kwargs):
+        if not self.request.user.is_authenticated:
+            return HttpResponseRedirect(reverse('registration:login'))
+
+        ruleset = RuleSet.objects.get(id=ruleset_id, owner=self.request.user)
+        response_data = {
+            # mock
+            'header': 'Create new rule',
+            'crypto': crypto,
+            'rule': {
+                'id': 0,
+                'type_of_rule': '',
+                'value': ''
+            },
+            'ruleset': ruleset,
+            'rule_types': Rule.RULE_DESC,
+            'ctype': 'new',
+            'error': kwargs.get('error', ''),
+        }
+
+        if rule_id:
+            try:
+                rule = Rule.objects.get(
+                    id=rule_id,
+                    rule_set=ruleset,
+                )
+            except Rule.DoesNotExist:
+                pass
+            else:
+                response_data['header'] = 'Edit rule'
+                response_data['rule'] = rule
+                response_data['ctype'] = 'edit'
+
+        return render(request, self.template_name, response_data)
+
+    def post(self, request, crypto, ruleset_id, rule_id):
+        if not self.request.user.is_authenticated:
+            return HttpResponseRedirect(reverse('registration:login'))
+
+        form = self.EditForm(request.POST)
+        if form.is_valid():
+            form_rule_type = form.cleaned_data['rtype']
+            form_value = form.cleaned_data['value']
+
+            if rule_id:
+                try:
+                    rule = Rule.objects.get(
+                        id=rule_id,
+                        rule_set_id=ruleset_id,
+                        rule_set__owner=self.request.user,
+                    )
+                    rule.type_of_rule = form_rule_type
+                    rule.value = form_value
+                    rule.save()
+                except Exception as e:
+                    print(e)
+            else:
+                try:
+                    if RuleSet.objects.filter(id=ruleset_id, owner=self.request.user).exists():
+                        Rule.objects.create(
+                            type_of_rule=form_rule_type,
+                            value=form_value,
+                            rule_set_id=ruleset_id,
+                        )
+                except Exception as e:
+                    print(e)
+        else:
+            return self.get(
+                request, crypto, ruleset_id, rule_id,
+                error="Value must be a real number."
+            )
+
+        return HttpResponseRedirect(reverse('crypto:rules', args=[crypto, ruleset_id]))
+
+
+class ExecutionLogView(View):
+    template_name = "crypto/execution_log.html"
+
+    def get(self, request, crypto, ruleset_id, **kwargs):
+        if not self.request.user.is_authenticated:
+            return HttpResponseRedirect(reverse('registration:login'))
+
+        try:
+            crypto = CryptoModel.objects.get(long_name=crypto.capitalize())
+            ruleset = RuleSet.objects.get(id=ruleset_id, owner=self.request.user)
+        except (RuleSet.DoesNotExist, CryptoModel.DoesNotExist):
+            return HttpResponseRedirect('/')
+        else:
+            trades = Trade.objects.filter(rule_set=ruleset).order_by('-date')
+
+        response_data = {
+            # mock
+            'header': 'Execution log for',
+            'crypto': crypto,
+            'ruleset': ruleset,
+            'trades': trades,
+            'error': kwargs.get('error', ''),
+        }
+
+        return render(request, self.template_name, response_data)
+
+
+
+class HistoryView(View):
+    template_name = "crypto/history.html"
+
+    def get(self, request, crypto, **kwargs):
+        if not self.request.user.is_authenticated:
+            return HttpResponseRedirect(reverse('registration:login'))
+
+        q_mh = MarketHistoric.objects.filter(
+            crypto__long_name=crypto.capitalize()
+        ).order_by('-date')
+
+        response_data = {
+            # mock
+            'header': 'Execution log for',
+            'crypto': crypto,
+            'historic': q_mh,
+            'error': kwargs.get('error', ''),
+        }
+
+        return render(request, self.template_name, response_data)

@@ -15,18 +15,38 @@
           {% if user.is_authenticated %}
             <ul class="navbar-nav mr-auto">
               <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
+                  <a class="nav-link" href="#">{% block header %}{% endblock header %}</a>
               </li>
             </ul>
+            <a class="navbar-text btn btn-outline-dark" href="{% url 'registration:logout' %}">Logout</a>
           {% endif %}
         </nav>
+
+        <div style="min-height:30px;"></div>
 
         {% block head %}
         {% endblock head %}
     </head>
-
     <body>
-        {% block content %}
-        {% endblock %}
+        <div>
+            {% block content %}
+            {% endblock %}
+        </div>
+        <div>
+            {% block errors %}
+                {% if error %}
+                <center>
+                    <div class="alert alert-danger" style="max-width:40%;">
+                        <strong>Error!</strong> {{error}}
+                    </div>
+                </center>
+                {% endif %}
+            {% endblock errors %}
+        </div>
+        <div>
+            {% block help %}
+            {% endblock help %}
+        </div>
+
     </body>
 </html>

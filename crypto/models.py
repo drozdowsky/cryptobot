@@ -110,22 +110,27 @@ class Rule(models.Model):
     SBOT_ABOVE = 'SBA'
     SBOT_BELOW = 'SBB'
 
+    RULE_TYPES_FULL = [
+        (BELOW, 'below', 'Price is below (PLN)'),
+        (ABOVE, 'above', 'Price is above (PLN)'),
+        (CHANGE_ABOVE, 'change_above', 'Price change is above (PLN)'),
+        (CHANGE_BELOW, 'change_below', 'Price change is below (PLN)'),
+        (CHANGE_PERC_ABOVE, 'change_perc_above', 'Price percent change is above (%)'),
+        (CHANGE_PERC_BELOW, 'change_perc_below', 'Price percent change is below (%)'),
+        # (MAX_VALUE_PERC, 'max_value_perc'),
+        # (MAX_VALUE, 'max_value'),
+        (AFTER_HOURS, 'after_hours', 'Wait at least (minutes)'),
+        (MBOT_ABOVE, 'market_bot_above', 'Market Bot is above (0.0-2.0)'),
+        (MBOT_BELOW, 'market_bot_below', 'Market Bot is below (0.0-2.0)'),
+        (SBOT_ABOVE, 'social_bot_above', 'Social Bot is above (0.0-2.0)'),
+        (SBOT_BELOW, 'social_bot_below', 'Social Bot is below (0.0-2.0)'),
+    ]
+
     RULE_TYPES = [
-        (BELOW, 'below'),
-        (ABOVE, 'above'),
-        (CHANGE_ABOVE, 'change_above'),
-        (CHANGE_BELOW, 'change_below'),
-        (CHANGE_PERC_ABOVE, 'change_perc_above'),
-        (CHANGE_PERC_BELOW, 'change_perc_below'),
-        (MAX_VALUE_PERC, 'max_value_perc'),
-        (MAX_VALUE, 'max_value'),
-        (AFTER_HOURS, 'after_hours'),
-        (MBOT_ABOVE, 'market_bot_above'),
-        (MBOT_BELOW, 'market_bot_below'),
-        (SBOT_ABOVE, 'social_bot_above'),
-        (SBOT_BELOW, 'social_bot_below'),
+        (sc, full_name) for sc, full_name, _ in RULE_TYPES_FULL
     ]
     RULE_TYPES_DICT = {sc: full_name for sc, full_name in RULE_TYPES}
+    RULE_DESC = [(sc, desc) for sc, _, desc in RULE_TYPES_FULL]
 
     #  unique_together = ('rule_set', 'value', 'type_of_rule')
     rule_set = models.ForeignKey(RuleSet, null=False, on_delete=models.CASCADE,
