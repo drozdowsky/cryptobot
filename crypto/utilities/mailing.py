@@ -46,12 +46,19 @@ class MailGenerator:
 
     def run(self):
         if not self.email:
+            self.logger.warning(
+                '%s (%s) does not have proper email', self.rs.owner, self.email
+            )
             return 3
 
         title, body = self.generate_mail()
         body = '<br>\n'.join(body)
         title = ' '.join(title)
-        send_email(self.email, title, body)
+        self.logger.info('Sending mail')
+        try:
+            send_email(self.email, title, body)
+        except Exception as ex:
+            self.logger.error("Can't send mail %s", ex)
         return 0
 
     def generate_mail(self):
@@ -152,8 +159,8 @@ class MailGenerator:
 
         date_range = (self.mp.mh.date - self.past_price.date)
         if timedelta(hours=23) < date_range < timedelta(hours=25):
-            _perc = (float(now_price - past_price) / float(now_price)) * 100
-            _format_string = '[24h/{3:+.2f} %]'.format(_perc)
+            _perc = ((now_price - past_price) / now_price) * 100.0
+            _format_string = '[24h/{0:+.2f} %]'.format(_perc)
             return _format_string
 
         return ''

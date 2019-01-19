@@ -45,11 +45,12 @@ class Executor(object):
     def process_result(self, result, rs):
         # FIXME: trades_here!
         type_of_ruleset = rs.type_of_ruleset
+        self.logger.info('Trying to generate mail!')
         try:
             result = MailGenerator(self.crypto, rs, self.mp, self.sp, result,
                                    self.past_price, self.logger).run()
         except Exception as ex:
-            self.logger('process_result {}'.format(str(ex)))
+            self.logger.warning('process_result {}'.format(str(ex)))
         else:
             # exit 0 == success
             if not result:

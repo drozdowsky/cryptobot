@@ -54,18 +54,25 @@ class MarketWatcherParser:
 
     def get_value_from_past(self, _timedelta):
         try:
-            crypto = MarketHistoric.objects.filter(date__gte=timezone.now()-_timedelta-timezone.timedelta(minutes=5),
-                                                   date__lte=timezone.now()-_timedelta).latest('date')
+            crypto = MarketHistoric.objects.filter(
+                date__gte=timezone.now()-_timedelta-timezone.timedelta(minutes=5),
+                date__lte=timezone.now()-_timedelta,
+            ).latest('date')
         except Exception as e:
             value = self.get_last_value()
-            self.logger.warning('get_value_from_past [E]: {} - returning {}'.format(str(e), value))
+            self.logger.warning(
+                'get_value_from_past [E]: {} - returning {} ({})'.format(
+                    str(e), value, str(_timedelta)
+                )
+            )
             return value
         else:
             return crypto.price
 
     def get_ratio_from_past(self, _timedelta):
-        _value = self.get_value_from_past(_timedelta)
-        return ((self.get_last_value()-_value)/_value)*100
+        _past = float(self.get_value_from_past(_timedelta))
+        _now = float(self.get_last_value())
+        return ((_now - _past) / _past) * 100
 
     def get_ratio_multiplier(self, divider=22, **timedelta):
         return 1/max(min(1+(self.get_ratio_from_past(timezone.timedelta(**timedelta))/divider), 2.0), 0.5)

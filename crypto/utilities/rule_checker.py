@@ -43,7 +43,7 @@ class RuleChecker(object):
         return False
 
     def get_change_above(self, rule):
-        latest_trade = self._get_latest_trade(self.mp.mh)
+        latest_trade = self._get_latest_trade()
         _difference = float(self.mp.get_latest_value() - latest_trade.price)
         if _difference > rule.value:
             return _difference
@@ -51,7 +51,7 @@ class RuleChecker(object):
         return False
 
     def get_change_below(self, rule):
-        latest_trade = self._get_latest_trade(self.mp.mh)
+        latest_trade = self._get_latest_trade()
         _difference = float(self.mp.get_latest_value() - latest_trade.price)
         if _difference < rule.value:
             return _difference
@@ -59,7 +59,7 @@ class RuleChecker(object):
         return False
 
     def get_change_perc_above(self, rule):
-        latest_trade = self._get_latest_trade(self.mp.mh)
+        latest_trade = self._get_latest_trade()
         _price = self.mp.get_latest_value()
         _perc = (float(_price - latest_trade.price) / float(_price)) * 100
         if _perc > rule.value:
@@ -68,7 +68,7 @@ class RuleChecker(object):
         return False
 
     def get_change_perc_below(self, rule):
-        latest_trade = self._get_latest_trade(self.mp.mh)
+        latest_trade = self._get_latest_trade()
         _price = self.mp.get_latest_value()
         _perc = (float(_price - latest_trade.price) / float(_price)) * 100
         if _perc < rule.value:
@@ -85,20 +85,22 @@ class RuleChecker(object):
         return rule.value
 
     def get_after_minutes(self, rule):
-        latest_trade = self._get_latest_trade(self.mp.mh)
+        latest_trade = self._get_latest_trade()
         if (timezone.now() - latest_trade.date).total_seconds() >= rule.value * 60:
             return latest_trade.date
 
         return False
 
-    def _get_latest_trade(self, rule):
+    def _get_latest_trade(self):
         if not self._latest_trade:
-            self._latest_trade = Trade.objects.filter(rule_set=rule.rule_set).latest()
+            self._latest_trade = Trade.objects.filter(
+                rule_set=self.ruleset
+            ).order_by('-date').first()
 
         if not self._latest_trade:
             self._latest_trade = Trade.objects.create(rule_set=self.ruleset,
                                                       type_of_trade='E',
-                                                      price=self.mp.get_latest_value(),
+                                                      price=self.mp.get_last_value(),
                                                       crypto=self.crypto)
 
         return self._latest_trade

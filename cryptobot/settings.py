@@ -146,7 +146,7 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console', 'django'],
-            'level': 'DEBUG',
+            'level': 'INFO',
         },
         'celery': {
             'handlers' : ['console', 'celery'],

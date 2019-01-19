@@ -28,4 +28,4 @@ class SocialWatcherParser:
         self.logger = logger
 
     def get_social_bot_multiplier(self):
-        return self.sh.gtrends_top_7day
+        return self.sh.gtrends_top_7d
