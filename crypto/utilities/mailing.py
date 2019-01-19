@@ -64,7 +64,7 @@ class MailGenerator:
             CHANGE_PERC_BELOW = 'CPB'
             MAX_VALUE_PERC = 'MVP'
             MAX_VALUE = 'MVE'
-            AFTER_HOURS = 'AHS'
+            AFTER_MINUTES = 'AHS'
             MBOT_ABOVE = 'MBA'
             MBOT_BELOW = 'MBB'
             SBOT_ABOVE = 'SBA'
@@ -91,10 +91,10 @@ class MailGenerator:
         return title_list, body_list
 
     def add_format_from_rule_checker(self, body_list):
-        after_hours_date = self.results.get('AHS')
-        if after_hours_date:
+        after_minutes_date = self.results.get('AHS')
+        if after_minutes_date:
             body_list.append('From {} to {}'.format(
-                str(after_hours_date.replace(microsecond=0)),
+                str(after_minutes_date.replace(microsecond=0)),
                 get_now()
             ))
 

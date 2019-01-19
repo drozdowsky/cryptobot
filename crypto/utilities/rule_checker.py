@@ -19,7 +19,7 @@ class RuleChecker(object):
             tof = rule.RULE_TYPES_DICT.get(rule.type_of_rule, None)
             _func = getattr(self, 'get_' + str(tof), None)
             if _func:
-                _result = _func()
+                _result = _func(rule)
                 if _result is False:
                     return {}
                 results[rule.type_of_rule] = _result

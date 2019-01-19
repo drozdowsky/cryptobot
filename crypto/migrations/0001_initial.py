@@ -59,7 +59,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('value', models.FloatField()),
-                ('type_of_rule', models.CharField(choices=[('BEL', 'below'), ('ABO', 'above'), ('CNG', 'change'), ('CNP', 'change_perc'), ('MVP', 'max_value_perc'), ('MVE', 'max_value'), ('AHS', 'after_hours'), ('MBA', 'market_bot_above'), ('MBB', 'market_bot_below'), ('SBA', 'social_bot_above'), ('SBB', 'social_bot_below')], max_length=3)),
+                ('type_of_rule', models.CharField(choices=[('BEL', 'below'), ('ABO', 'above'), ('CNG', 'change'), ('CNP', 'change_perc'), ('MVP', 'max_value_perc'), ('MVE', 'max_value'), ('AHS', 'after_minutes'), ('MBA', 'market_bot_above'), ('MBB', 'market_bot_below'), ('SBA', 'social_bot_above'), ('SBB', 'social_bot_below')], max_length=3)),
             ],
         ),
         migrations.CreateModel(

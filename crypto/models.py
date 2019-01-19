@@ -104,7 +104,7 @@ class Rule(models.Model):
     CHANGE_PERC_BELOW = 'CPB'
     MAX_VALUE_PERC = 'MVP'
     MAX_VALUE = 'MVE'
-    AFTER_HOURS = 'AHS'
+    AFTER_MINUTES = 'AHS'
     MBOT_ABOVE = 'MBA'
     MBOT_BELOW = 'MBB'
     SBOT_ABOVE = 'SBA'
@@ -119,7 +119,7 @@ class Rule(models.Model):
         (CHANGE_PERC_BELOW, 'change_perc_below', 'Price percent change is below (%)'),
         # (MAX_VALUE_PERC, 'max_value_perc'),
         # (MAX_VALUE, 'max_value'),
-        (AFTER_HOURS, 'after_hours', 'Wait at least (minutes)'),
+        (AFTER_MINUTES, 'after_minutes', 'Wait at least (minutes)'),
         (MBOT_ABOVE, 'market_bot_above', 'Market Bot is above (0.0-2.0)'),
         (MBOT_BELOW, 'market_bot_below', 'Market Bot is below (0.0-2.0)'),
         (SBOT_ABOVE, 'social_bot_above', 'Social Bot is above (0.0-2.0)'),
