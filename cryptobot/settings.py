@@ -135,11 +135,18 @@ LOGGING = {
             'formatter': 'simple',
             'maxBytes': 1024 * 1024 * 100,
         },
+        'django': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'django.log',
+            'formatter': 'simple',
+            'maxBytes': 1024 * 1024 * 100,
+        },
     },
     'loggers': {
         'django': {
-            'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'handlers': ['console', 'django'],
+            'level': 'DEBUG',
         },
         'celery': {
             'handlers' : ['console', 'celery'],
@@ -173,8 +180,8 @@ LOGIN_REDIRECT_URL = ('/')
 
 
 # CELERY STUFF
-BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+BROKER_URL = 'redis://localhost:7777'
+CELERY_RESULT_BACKEND = 'redis://localhost:7777'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'

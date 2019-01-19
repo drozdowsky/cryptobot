@@ -34,7 +34,7 @@ def get_mh_change(crypto, **timedelta_kwargs):
 
     if _now and _back_then:
         _now = float(_now.price) or 1.0
-        _back_then = float(_now.pricce) or 1.0
+        _back_then = float(_back_then.price) or 1.0
         return ((_now - _back_then) / _back_then) * 100
 
     return 0.0
