@@ -51,7 +51,7 @@ def get_crypto_history(request, crypto):
 class RulesetsView(View):
     template_name = "crypto/rulesets.html"
 
-    def get(self, request, crypto):
+    def get(self, request, crypto, **kwargs):
         if not self.request.user.is_authenticated:
             return HttpResponseRedirect(reverse('registration:login'))
 
@@ -60,7 +60,11 @@ class RulesetsView(View):
             owner=self.request.user
         ).order_by('name')
 
-        response_data = {'rulesets': rs, 'crypto': crypto}
+        response_data = {
+            'rulesets': rs,
+            'crypto': crypto,
+            'error': kwargs.get('error', ''),
+        }
         return render(request, self.template_name, response_data)
 
 
@@ -77,7 +81,7 @@ class AddEditRulesetView(View):
             )
         )
 
-    def get(self, request, crypto, ruleset_id):
+    def get(self, request, crypto, ruleset_id, **kwargs):
         if not self.request.user.is_authenticated:
             return HttpResponseRedirect(reverse('registration:login'))
 
@@ -91,6 +95,7 @@ class AddEditRulesetView(View):
                 'type_of_ruleset': ''
             },
             'ctype': 'new',
+            'error': kwargs.get('error', ''),
         }
 
         if ruleset_id:
@@ -149,7 +154,7 @@ class AddEditRulesetView(View):
 class RemoveRulesetView(View):
     template_name = "crypto/remove_ruleset.html"
 
-    def get(self, request, crypto, ruleset_id):
+    def get(self, request, crypto, ruleset_id, **kwargs):
         if not self.request.user.is_authenticated:
             return HttpResponseRedirect(reverse('registration:login'))
 
@@ -161,6 +166,7 @@ class RemoveRulesetView(View):
                 'name': '',
                 'id': 0
             },
+            'error': kwargs.get('error', ''),
         }
 
         try:
@@ -197,7 +203,7 @@ class RemoveRulesetView(View):
 class RulesView(View):
     template_name = "crypto/rules.html"
 
-    def get(self, request, crypto, ruleset_id):
+    def get(self, request, crypto, ruleset_id, **kwargs):
         if not self.request.user.is_authenticated:
             return HttpResponseRedirect(reverse('registration:login'))
 
@@ -211,7 +217,8 @@ class RulesView(View):
             'rules': rules,
             'crypto': crypto,
             'ruleset': RuleSet.objects.get(id=ruleset_id, owner=self.request.user),
-            'rule_types': {sc: desc for sc, desc in Rule.RULE_DESC}
+            'rule_types': {sc: desc for sc, desc in Rule.RULE_DESC},
+            'error': kwargs.get('error', ''),
         }
         return render(request, self.template_name, response_data)
 

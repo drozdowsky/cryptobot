@@ -94,7 +94,7 @@ class Currency(object):
 
         title, body = self.generate_title_body_list()
 
-        if (datetime.datetime.now()-self.cached.last_update).seconds//60 >= self.min_update_time > 0 \
+        if (datetime.datetime.now()-self.cached.last_update).total_seconds()//60 >= self.min_update_time > 0 \
                 and self.percent >= 1:
 
             title.append(self.__str__())

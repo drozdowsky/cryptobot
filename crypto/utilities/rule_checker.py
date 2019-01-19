@@ -86,7 +86,7 @@ class RuleChecker(object):
 
     def get_after_minutes(self, rule):
         latest_trade = self._get_latest_trade(self.mp.mh)
-        if (timezone.now() - latest_trade.date).seconds // 60 >= rule.value:
+        if (timezone.now() - latest_trade.date).total_seconds() >= rule.value * 60:
             return latest_trade.date
 
         return False
