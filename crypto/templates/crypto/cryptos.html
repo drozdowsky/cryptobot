@@ -30,7 +30,7 @@
                 <td>{{ crypto.three_days|safe }}</td>
                 <td>{{ crypto.seven_days|safe }}</td>
                 <td>{{ crypto.thirty_days|safe }}</td>
-                <td><a class="btn btn-light" href="{% url 'crypto:history' crypto.name %}" role="button">History</a> <a class="btn btn-dark" href="{% url 'crypto:rulesets' crypto.name %}" role="button">My rulesets</a></td>
+                <td><a class="btn btn-light" href="{% url 'crypto:history' crypto.name 1 %}" role="button">History</a> <a class="btn btn-dark" href="{% url 'crypto:rulesets' crypto.name %}" role="button">My rulesets</a></td>
             </tr>
         {% endfor %}
         </table>

@@ -15,11 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from .views import *
+from crypto.views import CryptoView
 
 
 urlpatterns = [
-    url(r'^$', MainView.as_view(), name='main'),
+    url(r'^$', CryptoView.as_view()),
     url(r'^accounts/', include('registration.urls')),
     url(r'^crypto/', include('crypto.urls')),
     url(r'^admin/', admin.site.urls),

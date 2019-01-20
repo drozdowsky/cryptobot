@@ -1,0 +1,42 @@
+{% extends 'cryptobot/base.html' %}
+{% load crypto_extras %}
+{% block head %}
+{% endblock head %}
+
+{% block header %}
+/history/{{ruleset.name}}
+{% endblock header %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <h2 style="margin-left:20px;">{{ crypto }}</h2>
+        <table class="table">
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Date</th>
+                <th scope="col"></th>
+                <th scope="col">Price (PLN)</th>
+                <th scope="col">ASKS Value</th>
+                <th scope="col">BIDS Value</th>
+                <th scope="col">Avg. Transaction Value</th>
+            </tr>
+        {% for log in historic %}
+            <tr>
+                <td></td>
+                <td>{{ log.date }}</td>
+                <td></td>
+                <td>{{ log.price }}</td>
+                <td>{{ log.asks_value }}</td>
+                <td>{{ log.bids_value }}</td>
+                <td>{{ log.avg_transaction_value }}</td>
+                <td></td>
+            </tr>
+        {% endfor %}
+        </table>
+        <div>
+            <a class="btn btn-secondary float-left m-2" href="{% url 'crypto:history' crypto page|add:"-1" %}" role="button">Prev. page</a>
+
+            <a class="btn btn-secondary float-right m-2" href="{% url 'crypto:history' crypto page|add:"1" %}" role="button">Next page</a>
+        </div>
+    {% endif %}
+{% endblock %}

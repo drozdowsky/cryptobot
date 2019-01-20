@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.conf import settings
+from django.utils import timezone
 
 
 class CryptoModel(models.Model):
@@ -26,7 +27,7 @@ class MarketHistoric(models.Model):
     avg_transaction_value = models.FloatField()
     price = models.DecimalField(default=1.0, decimal_places=2, max_digits=19)
     response_json = JSONField()
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return '{}: {} at {}'.format(self.crypto.long_name, self.price,
@@ -43,7 +44,7 @@ class MarketHistoric(models.Model):
 class SocialHistoric(models.Model):
     crypto = models.ForeignKey(CryptoModel, null=False, on_delete=models.CASCADE)
     gtrends_top_7d = models.FloatField()
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return '{}: {} at {}'.format(self.crypto.long_name, self.gtrends_top_7d,
@@ -139,13 +140,13 @@ class Rule(models.Model):
     type_of_rule = models.CharField(max_length=3, choices=RULE_TYPES)
 
     class Meta:
-        unique_together = ('rule_set', 'value', 'type_of_rule')
+        unique_together = ('rule_set', 'type_of_rule')
 
 
 class Trade(models.Model):
     TRADE_TYPES = RuleSet.RULESET_TYPES
 
-    date = models.DateTimeField(auto_now=True)
+    date = models.DateTimeField(default=timezone.now)
     type_of_trade = models.CharField(max_length=1, choices=TRADE_TYPES)
     amount = models.DecimalField(default=0.0, decimal_places=8, max_digits=19)
     price = models.DecimalField(default=1.0, decimal_places=2, max_digits=19)

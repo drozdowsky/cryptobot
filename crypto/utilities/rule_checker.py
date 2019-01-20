@@ -44,7 +44,7 @@ class RuleChecker(object):
 
     def get_change_above(self, rule):
         latest_trade = self._get_latest_trade()
-        _difference = float(self.mp.get_latest_value() - latest_trade.price)
+        _difference = float(self.mp.get_last_value() - latest_trade.price)
         if _difference > rule.value:
             return _difference
 
@@ -52,7 +52,7 @@ class RuleChecker(object):
 
     def get_change_below(self, rule):
         latest_trade = self._get_latest_trade()
-        _difference = float(self.mp.get_latest_value() - latest_trade.price)
+        _difference = float(self.mp.get_last_value() - latest_trade.price)
         if _difference < rule.value:
             return _difference
 
@@ -60,8 +60,9 @@ class RuleChecker(object):
 
     def get_change_perc_above(self, rule):
         latest_trade = self._get_latest_trade()
-        _price = self.mp.get_latest_value()
-        _perc = (float(_price - latest_trade.price) / float(_price)) * 100
+        _price = self.mp.get_last_value()
+        _old_price = latest_trade.price
+        _perc = (float(_price - _old_price) / float(_old_price)) * 100
         if _perc > rule.value:
             return _perc
 
@@ -69,8 +70,9 @@ class RuleChecker(object):
 
     def get_change_perc_below(self, rule):
         latest_trade = self._get_latest_trade()
-        _price = self.mp.get_latest_value()
-        _perc = (float(_price - latest_trade.price) / float(_price)) * 100
+        _price = self.mp.get_last_value()
+        _old_price = latest_trade.price
+        _perc = (float(_price - _old_price) / float(_old_price)) * 100
         if _perc < rule.value:
             return _perc
 

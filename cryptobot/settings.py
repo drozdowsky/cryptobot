@@ -151,6 +151,10 @@ LOGGING = {
         'celery': {
             'handlers' : ['console', 'celery'],
             'level': 'DEBUG',
+        },
+        'crypto_tests': {
+            'handlers': ['console'],
+            'level': 'DEBUG'
         }
     }
 }

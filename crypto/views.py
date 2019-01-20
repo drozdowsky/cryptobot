@@ -24,7 +24,7 @@ def get_cryptos_data():
         else:
             color = 'dark'
 
-        return '<p class="text-{color}">{change}%</p>'.format(
+        return '<p class="text-{color}">{change:+.2f}%</p>'.format(
             color=color, change=_mh_change
         )
 
@@ -40,13 +40,21 @@ def get_cryptos_data():
                 'seven_days': get_mh_change_with_colors(crypto, days=7),
                 'thirty_days': get_mh_change_with_colors(crypto, days=30),
             } for crypto in cryptos],
+        'error': ''
     }
 
     return return_dict
 
 
-def get_crypto_history(request, crypto):
-    pass
+class CryptoView(View):
+    template_name = "crypto/cryptos.html"
+
+    def get(self, request):
+        if not self.request.user.is_authenticated:
+            return HttpResponseRedirect(reverse('registration:login'))
+
+        return render(request, self.template_name, get_cryptos_data())
+
 
 class RulesetsView(View):
     template_name = "crypto/rulesets.html"
@@ -318,7 +326,7 @@ class ExecutionLogView(View):
             crypto = CryptoModel.objects.get(long_name=crypto.capitalize())
             ruleset = RuleSet.objects.get(id=ruleset_id, owner=self.request.user)
         except (RuleSet.DoesNotExist, CryptoModel.DoesNotExist):
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect(reverse('crypto:main'))
         else:
             trades = Trade.objects.filter(rule_set=ruleset).order_by('-date')
 
@@ -338,13 +346,16 @@ class ExecutionLogView(View):
 class HistoryView(View):
     template_name = "crypto/history.html"
 
-    def get(self, request, crypto, **kwargs):
+    def get(self, request, crypto, page, **kwargs):
         if not self.request.user.is_authenticated:
             return HttpResponseRedirect(reverse('registration:login'))
 
+        if page <= 0:
+            return HttpResponseRedirect(reverse('crypto:main'))
+
         q_mh = MarketHistoric.objects.filter(
             crypto__long_name=crypto.capitalize()
-        ).order_by('-date')
+        ).order_by('-date')[(page-1)*11:page*11]
 
         response_data = {
             # mock
@@ -352,6 +363,7 @@ class HistoryView(View):
             'crypto': crypto,
             'historic': q_mh,
             'error': kwargs.get('error', ''),
+            'page': page
         }
 
         return render(request, self.template_name, response_data)

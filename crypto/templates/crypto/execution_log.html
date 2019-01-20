@@ -4,7 +4,7 @@
 {% endblock head %}
 
 {% block header %}
-/history/{{ruleset.name}}
+/logs/{{ruleset.name}}
 {% endblock header %}
 
 {% block content %}
@@ -23,9 +23,9 @@
         {% for log in trades %}
             <tr>
                 <td></td>
-                <td>{{ log.date }}PLN</td>
+                <td>{{ log.date }}</td>
                 <td></td>
-                <td>{{ log.price }}</td>
+                <td>{{ log.price }}PLN</td>
                 <td>{{ log.amount }}</td>
                 <td>{{ log.type_of_trade|reverse_trade }}</td>
                 <td></td>
