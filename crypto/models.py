@@ -132,6 +132,7 @@ class Rule(models.Model):
     ]
     RULE_TYPES_DICT = {sc: full_name for sc, full_name in RULE_TYPES}
     RULE_DESC = [(sc, desc) for sc, _, desc in RULE_TYPES_FULL]
+    RULE_DESC_DICT = {sc: desc for sc, _, desc in RULE_TYPES_FULL}
 
     #  unique_together = ('rule_set', 'value', 'type_of_rule')
     rule_set = models.ForeignKey(RuleSet, null=False, on_delete=models.CASCADE,

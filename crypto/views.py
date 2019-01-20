@@ -315,6 +315,57 @@ class AddEditRuleView(View):
         return HttpResponseRedirect(reverse('crypto:rules', args=[crypto, ruleset_id]))
 
 
+class RemoveRuleView(View):
+    template_name = "crypto/remove_rule.html"
+
+    def get(self, request, crypto, ruleset_id, rule_id, **kwargs):
+        if not self.request.user.is_authenticated:
+            return HttpResponseRedirect(reverse('registration:login'))
+
+        response_data = {
+            'header': 'Remove',
+            'crypto': crypto.capitalize(),
+            'rule': {
+                'name': '',
+                'id': 0,
+            },
+            'ruleset': {
+                'id': ruleset_id,
+            },
+            'error': kwargs.get('error', ''),
+        }
+
+        try:
+            rule = Rule.objects.get(
+                id=rule_id,
+                rule_set_id=ruleset_id,
+                rule_set__owner=self.request.user
+            )
+        except Rule.DoesNotExist:
+            return HttpResponseRedirect(reverse('crypto:rules', args=[crypto, ruleset_id]))
+        else:
+            response_data['rule']['name'] = Rule.RULE_DESC_DICT[rule.type_of_rule]
+            response_data['rule']['short_name'] = rule.type_of_rule
+            response_data['rule']['id'] = rule.id
+
+        return render(request, self.template_name, response_data)
+
+    def post(self, request, crypto, ruleset_id, rule_id):
+        if not self.request.user.is_authenticated:
+            return HttpResponseRedirect(reverse('registration:login'))
+
+        try:
+            Rule.objects.get(
+                id=rule_id,
+                rule_set_id=ruleset_id,
+                rule_set__owner=self.request.user,
+            ).delete()
+        except Rule.DoesNotExist:
+            pass
+
+        return HttpResponseRedirect(reverse('crypto:rules', args=[crypto, ruleset_id]))
+
+
 class ExecutionLogView(View):
     template_name = "crypto/execution_log.html"
 

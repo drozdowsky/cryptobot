@@ -24,7 +24,7 @@
                 <td><b>{{ rule.value }}</b></td>
                 <td></td>
                 <td>
-                    <a class="btn btn-light" href="" role="button">Remove</a>              
+                    <a class="btn btn-light" href="{% url 'crypto:remove_rule' crypto rule.rule_set_id rule.id %}" role="button">Remove</a>              
                     <a class="btn btn-light" href="{% url 'crypto:add_edit_rule' crypto rule.rule_set_id rule.id %}" role="button">Edit</a>  
                 </td>
             </tr>

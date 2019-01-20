@@ -1,0 +1,26 @@
+{% extends 'cryptobot/base.html' %}
+
+{% block header %}
+/rules/remove/{{rule.short_name}}
+{% endblock header %}
+
+{% block content %}
+<center>
+    <div style="width:30%;min_width:300px;">
+    <form method="post" action="{% url 'crypto:remove_rule' crypto ruleset.id rule.id %}">
+        {% csrf_token %}
+        <h2>{{ crypto }}</h2><h3>{{ header }} {{ rule.name }}</h3>
+        <table class="table">
+            <tr>
+                <td>
+                    <center>
+                        <a class="btn btn-success" href="{% url 'crypto:rules' crypto ruleset.id %}">No</a> 
+                        <input class="btn btn-danger" type="submit" value="Yes" />
+                    </center>
+                </td>
+            </tr>
+        </table>
+    </form>
+    </div>
+</center>
+{% endblock %}
