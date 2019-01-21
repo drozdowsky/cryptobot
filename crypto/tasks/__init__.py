@@ -32,3 +32,15 @@ def run_executor():
     mp = market_watcher.MarketWatcherParser(mh, LOGGER)
     sp = social_watcher.SocialWatcherParser(sh, LOGGER)
     executor.run_executor_task(LOGGER, mp, sp)
+
+
+def run_ghetto_way():
+    from time import sleep
+    while True:
+        try:
+            fetch_market_data()
+            fetch_social_data()
+            run_executor()
+            sleep(60)
+        except Exception as ex:
+            print('run_ghetto_way: {ex}'.format(ex=str(ex)))

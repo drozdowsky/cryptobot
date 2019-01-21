@@ -6,3 +6,4 @@ requests
 uWSGI
 pytrends
 selenium
+django-test-plus
