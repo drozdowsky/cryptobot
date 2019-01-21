@@ -28,7 +28,7 @@ def get_cryptos_data():
             color=color, change=_mh_change
         )
 
-    cryptos = CryptoModel.objects.all()
+    cryptos = CryptoModel.objects.all().order_by('long_name')
     return_dict = {
         'cryptos': [
             {

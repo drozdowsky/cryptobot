@@ -5,3 +5,4 @@ redis
 requests
 uWSGI
 pytrends
+selenium

@@ -31,7 +31,7 @@
         {% endfor %}
         </table>
         <div>
-            <a class="btn btn-success float-right m-2" href="{% url 'crypto:add_edit_rule' crypto ruleset.id 0 %}" role="button">Add new rule</a>
+            <a class="btn btn-success float-right m-2" name="add_edit_rule" href="{% url 'crypto:add_edit_rule' crypto ruleset.id 0 %}" role="button">Add new rule</a>
             <a class="btn btn-secondary float-left m-2" href="{% url 'crypto:rulesets' crypto %}" role="button">Go back</a>
         </div>
     {% endif %}
