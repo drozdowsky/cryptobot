@@ -68,7 +68,6 @@ class RuleCheckerTest(BaseTest):
         self.cryptoSetUp()
 
         self.old_trade = Trade.objects.create(
-            crypto=self.crypto,
             type_of_trade=self.ruleset.type_of_ruleset,
             rule_set=self.ruleset,
             price=Decimal('250.0'),

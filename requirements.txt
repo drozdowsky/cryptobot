@@ -1,6 +1,6 @@
 celery
 Django
-psycopg2
+psycopg2-binary
 redis
 requests
 uWSGI

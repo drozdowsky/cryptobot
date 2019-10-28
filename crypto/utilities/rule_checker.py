@@ -100,10 +100,11 @@ class RuleChecker(object):
             ).order_by('-date').first()
 
         if not self._latest_trade:
-            self._latest_trade = Trade.objects.create(rule_set=self.ruleset,
-                                                      type_of_trade='E',
-                                                      price=self.mp.get_last_value(),
-                                                      crypto=self.crypto)
+            self._latest_trade = Trade.objects.create(
+                rule_set=self.ruleset,
+                type_of_trade='E',
+                price=self.mp.get_last_value(),
+            )
 
         return self._latest_trade
 
