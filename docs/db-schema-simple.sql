@@ -9,7 +9,7 @@ CREATE TABLE public.auth_user (
     email character varying(254) NOT NULL,
     is_staff boolean NOT NULL,
     is_active boolean NOT NULL,
-    date_joined timestamp with time zone NOT NULL
+    date_joined timestamp with time zone NOT NULL,
 	amount numeric(19,2) NOT NULL
 );
 
