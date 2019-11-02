@@ -1,27 +1,33 @@
 {% extends 'cryptobot/base.html' %}
-
+{% load static %}
+{% block link %}
+        <link rel="stylesheet" type="text/css" href="{% static 'login.css' %}" />
+{% endblock link %}
 {% block content %}
-{% if not user.is_authenticated %}
-<form method="post" action="{% url 'registration:login' %}">
-{% csrf_token %}
-<center>
-<br>
-<br>
-<h3>Sign in</h3>
-<table>
-<tr>
-	<td><label for="id_username"><p>Username:</p></label></td> <td><input type="text" name="username" required maxlength="254" autofocus id="id_username" /></td>
-</tr>
-<tr>
-	<td><label for="id_password"><p>Password:</p></label></td> <td><input type="password" name="password" required id="id_password" /></td>
-</tr>
-
-<tr><td></td><td class="text_allign_right"><input type="submit" value="Login" /></td></tr>
-</table>
-<a href="{% url 'registration:register' %}">Click here to sign up!</a>
-</center>
-</form>
-
-{% endif %}
-
+    {% if not user.is_authenticated %}
+        <form method="post" action="{% url 'registration:login' %}">
+        {% csrf_token %}
+            <div class="login-box">
+                <h3>Sign in</h3>
+                <div class="inner-login-box">
+                    <div class="login-labels">
+                        <div>
+                            <label for="id_username">Username:</label></br>
+                            <label for="id_password">Password:</label>
+                        </div>
+                        <div>
+                            <input type="text" name="username" required maxlength="254" autofocus id="id_username" /></br>
+                            <input type="password" name="password" required id="id_password" /></br>
+                        </div>
+                        <div class="login-button-div">
+                            <input type="submit" value="Login" />
+                        </div>
+                    </div>
+                </div>
+                <div class="sign-up-link">
+                    <a href="{% url 'registration:register' %}"><u>Click here to sign up!</u></a>
+                </div>
+            </div>
+        </form>
+    {% endif %}
 {% endblock %}

@@ -1,11 +1,11 @@
 from datetime import timedelta
 
-from crypto.models import MarketHistoric, RuleSet, Trade, \
-    get_or_create_crypto_model
+from django.utils import timezone
+
+from crypto.models import (MarketHistoric, RuleSet, Trade,
+                           get_or_create_crypto_model)
 from crypto.utilities.mailing import MailGenerator
 from crypto.utilities.rule_checker import RuleChecker
-
-from django.utils import timezone
 
 
 def run_executor_task(logger, mp, sp):
@@ -21,12 +21,13 @@ class Executor(object):
         self.crypto = crypto
         self.logger = logger
         self.past_price = MarketHistoric.objects.filter(
-            date__lte=timezone.now()-timedelta(hours=24)
+            date__lte=timezone.now() - timedelta(hours=24)
         ).order_by('-date').first() or self.mp.mh.price
 
     def run(self):
-        qs = RuleSet.objects.filter(crypto=self.crypto) \
-            .select_related('owner').prefetch_related('rules')
+        qs = RuleSet.objects.filter(
+            crypto=self.crypto
+        ).select_related('owner').prefetch_related('rules')
 
         self.logger.info('[EXEC] Starting processing rulesets!')
         for rs in qs:
@@ -54,7 +55,8 @@ class Executor(object):
         else:
             # exit 0 == success
             if not result:
-                Trade.objects.create(type_of_trade=type_of_ruleset,
-                                     price=self.mp.mh.price,
-                                     rule_set=rs,
-                                     crypto=self.crypto)
+                Trade.objects.create(
+                    type_of_trade=type_of_ruleset,
+                    price=self.mp.mh.price,
+                    rule_set=rs,
+                )

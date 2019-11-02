@@ -72,16 +72,6 @@ class CryptoWallet(models.Model):
         unique_together = ('owner', 'crypto')
 
 
-class CurrencyWallet(models.Model):
-    # we store this as table because this gives room for future improvements
-    # (mulitple wallets etc.)
-    owner = models.OneToOneField(
-        settings.AUTH_USER_MODEL, primary_key=True,
-        on_delete=models.CASCADE
-    )
-    amount = models.DecimalField(default=0.0, decimal_places=2, max_digits=19)
-
-
 class RuleSet(models.Model):
     EMAIL_ONLY = 'E'
     BUY = 'B'

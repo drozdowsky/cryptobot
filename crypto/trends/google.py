@@ -7,11 +7,13 @@ GT_POW = 0.25
 
 
 class GoogleTrends:
-    TIME_MAPPING = {1: 'now 1-d',
-                    7: 'now 7-d',
-                    30: 'today 1-m',
-                    60: 'today 2-m',
-                    90: 'today 3-m'}
+    TIME_MAPPING = {
+        1: 'now 1-d',
+        7: 'now 7-d',
+        30: 'today 1-m',
+        60: 'today 2-m',
+        90: 'today 3-m',
+    }
 
     def __init__(self, keywords, day):
         self.keywords = keywords
@@ -22,8 +24,10 @@ class GoogleTrends:
         try:
             date_format = self.TIME_MAPPING[self.day]
         except KeyError:
-            date_format = '{} {}'.format(datetime.now().strftime('%Y-%m-%d'),
-                                         (datetime.now()-timedelta(days=self.day)).strftime('%Y-%m-%d'))
+            date_format = '{} {}'.format(
+                datetime.now().strftime('%Y-%m-%d'),
+                (datetime.now() - timedelta(days=self.day)).strftime('%Y-%m-%d')
+            )
 
         self.request.build_payload(self.keywords, timeframe=date_format)
         return self.request.interest_over_time()
@@ -46,7 +50,7 @@ class SignificanceOfTrends:
         return self.result.get_values()[-1][0]
 
     def get_value_ratio(self):
-        return (self.get_value_for_last_results()/100)*2.0
+        return (self.get_value_for_last_results() / 100) * 2.0
 
 
 def get_crypto_trend_ratio(crypto, day=7):

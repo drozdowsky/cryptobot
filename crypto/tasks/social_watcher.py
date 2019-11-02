@@ -8,8 +8,10 @@ def run_social_watcher_task(logger):
     try:
         crypto_model = get_or_create_crypto_model('Ethereum', 'ETH')
         gtrends_7day = get_crypto_trend_ratio(crypto_model, 7)
-        sh = SocialHistoric(crypto=crypto_model,
-                            gtrends_top_7d=gtrends_7day)
+        sh = SocialHistoric(
+            crypto=crypto_model,
+            gtrends_top_7d=gtrends_7day
+        )
         # datetime = auto_now_add = True
         sh.save()
     except Exception as ex:

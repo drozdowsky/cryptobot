@@ -1,0 +1,41 @@
+.login-box {
+    border: 2px solid rgba(0,0,0,0.3);
+    border-radius: 5px;
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.login-box > h3 {
+    text-align: center;
+}
+
+.inner-login-box {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.login-labels {
+    text-align: center;
+}
+
+.login-labels > div {
+    display: inline-block;
+    text-align: left;
+}
+
+.login-labels > .login-button-div {
+    display: block;
+    text-align: center;
+}
+
+.login-labels > .login-button-div > input {
+    width: 75%;
+}
+
+.sign-up-link {
+    width: 100%;
+    text-align: center;
+}
+
