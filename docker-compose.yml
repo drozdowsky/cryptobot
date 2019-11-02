@@ -1,0 +1,60 @@
+version: '2'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        STATIC_URL: '/static/'
+    restart: unless-stopped
+    networks:
+      - crypto-backend
+    env_file: local.env
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: library/postgres:11.1-alpine
+    restart: unless-stopped
+    networks:
+      - crypto-backend
+    volumes:
+      - crypto-db:/var/lib/postgresql
+    environment:
+      - POSTGRES_USER=crypto
+      - POSTGRES_PASSWORD=crypto
+
+  redis:
+    image: library/redis:5.0-alpine
+    restart: unless-stopped
+    networks:
+      - crypto-backend
+    volumes:
+      - crypto-redis:/data
+
+  celery:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        STATIC_URL: '/static/'
+    command: celery -A crypto worker --app=cryptobot.celeryconf:app --loglevel=info
+    restart: unless-stopped
+    networks:
+      - crypto-backend
+    env_file: local.env
+    depends_on:
+      - redis
+      - db
+
+volumes:
+  crypto-db:
+    driver: local
+  crypto-redis:
+    driver: local
+
+networks:
+  crypto-backend:
+    driver: bridge

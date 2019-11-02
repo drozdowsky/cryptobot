@@ -10,7 +10,7 @@ CREATE TABLE public.auth_user (
     is_staff boolean NOT NULL,
     is_active boolean NOT NULL,
     date_joined timestamp with time zone NOT NULL,
-	amount numeric(19,2) NOT NULL
+	base_currency numeric(19,2) NOT NULL
 );
 
 CREATE TABLE public.crypto_cryptomodel (
