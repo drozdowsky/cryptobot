@@ -1,12 +1,10 @@
-version: '2'
+version: '2.3'
 
 services:
   web:
     build:
       context: .
       dockerfile: ./Dockerfile
-      args:
-        STATIC_URL: '/static/'
     restart: unless-stopped
     networks:
       - crypto-backend
@@ -38,8 +36,6 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-      args:
-        STATIC_URL: '/static/'
     command: celery -A crypto worker --app=cryptobot.celeryconf:app --loglevel=info
     restart: unless-stopped
     networks:

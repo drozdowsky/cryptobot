@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
-from . import local_settings
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
@@ -22,19 +20,14 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-
-with open('{}/secret_key'.format(os.path.expanduser('~'))) as f:
-    print("Loading SECRET_KEY that should be file with one line that is random as much as possible")
-    SECRET_KEY = f.readline()
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = local_settings.DEBUG
+DEBUG = False
 
-ALLOWED_HOSTS = ['45.33.34.164', '127.0.0.1']
-
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '[::1]']
 
 # Application definition
-
 INSTALLED_APPS = [
     'registration.apps.RegistrationConfig',
     'crypto.apps.CryptoConfig',
