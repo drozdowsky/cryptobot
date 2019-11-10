@@ -3,7 +3,8 @@ FROM python:3.7-slim
 RUN groupadd -r crypto && useradd -r -g crypto crypto
 
 RUN apt-get -y update \
-	&& apt-get clean
+    && apt-get -y install gcc \
+    && apt-get clean
 
 COPY . /app
 WORKDIR /app
@@ -16,4 +17,4 @@ ENV PROCESSES 4
 EXPOSE 8001
 
 RUN python3 manage.py collectstatic --no-input
-CMD ["uwsgi", "--ini", "/app/cryptobot/uwsgi.ini"]
+CMD python3 manage.py migrate && uwsgi --ini /app/cryptobot/uwsgi.ini

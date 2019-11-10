@@ -25,7 +25,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '[::1]']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 INSTALLED_APPS = [
@@ -69,19 +69,19 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'cryptobot.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'crypto',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
+        'USER': 'crypto',
+        'PASSWORD': 'crypto',
+        'HOST': 'db',
         'PORT': '',
     }
 }
@@ -89,7 +89,6 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -153,23 +152,18 @@ LOGGING = {
     }
 }
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'Europe/Warsaw'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "cryptobot/static/cryptobot")
@@ -178,9 +172,21 @@ LOGIN_REDIRECT_URL = ('/')
 
 
 # CELERY STUFF
-BROKER_URL = 'redis://localhost:7777'
-CELERY_RESULT_BACKEND = 'redis://localhost:7777'
+BROKER_URL = 'redis://redis:6379/1'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/2'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Europe/Warsaw'
+
+# CACHE
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379/0",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "cache"
+    }
+}

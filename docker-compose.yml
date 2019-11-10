@@ -6,6 +6,8 @@ services:
       context: .
       dockerfile: ./Dockerfile
     restart: unless-stopped
+    ports:
+      - "8001:8001"
     networks:
       - crypto-backend
     env_file: local.env
@@ -36,7 +38,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    command: celery -A crypto worker --app=cryptobot.celeryconf:app --loglevel=info
+    command: celery -A crypto worker --app=cryptobot.celery:app --loglevel=info -B
     restart: unless-stopped
     networks:
       - crypto-backend
