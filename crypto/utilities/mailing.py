@@ -1,9 +1,7 @@
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-
-from crypto.config import LOGIN, PASSWORD, PORT, SMTP_SERVER
-
+from django.conf import settings
 from django.utils import timezone
 from datetime import timedelta
 
@@ -12,9 +10,9 @@ def get_now():
 
 
 def send_email(recipient, subject, body):
-    mail_user = LOGIN
-    mail_pwd = PASSWORD
-    FROM = LOGIN
+    mail_user = settings.EMAIL_HOST_USER
+    mail_pwd = settings.EMAIL_HOST_PASSWORD
+    FROM = settings.EMAIL_HOST_USER
     TO = recipient if type(recipient) is list else [recipient]
 
     message = MIMEMultipart('alternative')
@@ -24,7 +22,7 @@ def send_email(recipient, subject, body):
 
     message.attach(MIMEText(body, 'html'))
 
-    server = smtplib.SMTP_SSL(SMTP_SERVER, int(PORT))
+    server = smtplib.SMTP_SSL(settings.EMAIL_HOST, int(settings.EMAIL_PORT))
     server.ehlo()
 
     server.login(mail_user, mail_pwd)

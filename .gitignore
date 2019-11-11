@@ -4,3 +4,4 @@ crypto/config.py
 celerybeat.pid
 celerybeat-schedule
 __pycache__
+static/

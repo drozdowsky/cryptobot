@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/1.11/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
-
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -23,9 +22,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get("DEBUG").lower() == "true"
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['127.0.0.1', '::1', os.environ.get("ALLOWED_HOST")]
 
 # Application definition
 INSTALLED_APPS = [
@@ -55,7 +54,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR + '/templates/',
+            BASE_DIR + '/cryptobot/templates/',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -79,8 +78,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'crypto',
-        'USER': 'crypto',
-        'PASSWORD': 'crypto',
+        'USER': os.environ.get("POSTGRES_USER"),
+        'PASSWORD': os.environ.get("POSTGRES_PASSWORD"),
         'HOST': 'db',
         'PORT': '',
     }
@@ -124,14 +123,14 @@ LOGGING = {
         'celery': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'celery.log',
+            'filename': '_logs/celery.log',
             'formatter': 'simple',
             'maxBytes': 1024 * 1024 * 100,
         },
         'django': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'django.log',
+            'filename': '_logs/django.log',
             'formatter': 'simple',
             'maxBytes': 1024 * 1024 * 100,
         },
@@ -190,3 +189,8 @@ CACHES = {
         "KEY_PREFIX": "cache"
     }
 }
+
+EMAIL_HOST = os.environ.get("EMAIL_HOST")
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = os.environ.get("EMAIL_PORT")

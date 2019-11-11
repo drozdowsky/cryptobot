@@ -7,32 +7,15 @@ services:
       dockerfile: ./Dockerfile
     restart: unless-stopped
     ports:
-      - "8001:8001"
+      - 8001:8001
+    volumes:
+      - ./:/app
     networks:
       - crypto-backend
     env_file: local.env
     depends_on:
       - db
       - redis
-
-  db:
-    image: library/postgres:11.1-alpine
-    restart: unless-stopped
-    networks:
-      - crypto-backend
-    volumes:
-      - crypto-db:/var/lib/postgresql
-    environment:
-      - POSTGRES_USER=crypto
-      - POSTGRES_PASSWORD=crypto
-
-  redis:
-    image: library/redis:5.0-alpine
-    restart: unless-stopped
-    networks:
-      - crypto-backend
-    volumes:
-      - crypto-redis:/data
 
   celery:
     build:
@@ -40,12 +23,46 @@ services:
       dockerfile: ./Dockerfile
     command: celery -A crypto worker --app=cryptobot.celery:app --loglevel=info -B
     restart: unless-stopped
+    volumes:
+      - ./:/app
     networks:
       - crypto-backend
     env_file: local.env
     depends_on:
       - redis
       - db
+
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./cryptobot/uwsgi_params:/app/cryptobot/uwsgi_params
+      - ./cryptobot/cryptobot_nginx.conf:/etc/nginx/conf.d/cryptobot_nginx.conf
+      - ./static/:/app/static
+    networks:
+      - crypto-backend
+    depends_on:
+      - web
+
+  db:
+    image: library/postgres:11.1-alpine
+    restart: unless-stopped
+    volumes:
+      - crypto-db:/var/lib/postgresql
+    networks:
+      - crypto-backend
+    env_file: local.env
+
+  redis:
+    image: library/redis:5.0-alpine
+    restart: unless-stopped
+    volumes:
+      - crypto-redis:/data
+    networks:
+      - crypto-backend
 
 volumes:
   crypto-db:

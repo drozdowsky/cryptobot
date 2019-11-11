@@ -8,4 +8,6 @@ How to install:
 * git clone https://github.com/drozdowsky/cryptobot
 * cd cryptobot
 * docker-compose up
-* app runs on port :8001
+* docker-compose exec web python manage.py collectstatic --noinput
+* docker-compose exec web python manage.py migrate
+* http://127.0.0.1/ (app runs on default http port :80)
