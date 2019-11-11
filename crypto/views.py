@@ -10,11 +10,34 @@ from crypto.models import CryptoModel, RuleSet, Rule, Trade, MarketHistoric
 from crypto.utilities import get_mh_change, get_mh_from_past
 
 
-def get_cryptos_data():
-    """
-    This is not a view. It is used in cryptobot.views
-    """
-    def get_mh_change_with_colors(crypto, **kwargs):
+class CryptoView(View):
+    template_name = "crypto/cryptos.html"
+
+
+    def get(self, request):
+        if not self.request.user.is_authenticated:
+            return HttpResponseRedirect(reverse('registration:login'))
+
+        cryptos = CryptoModel.objects.all().order_by('long_name')
+        return_dict = {
+            'cryptos': [
+                {
+                    'name': crypto.long_name,
+                    'price': getattr(get_mh_from_past(crypto), 'price', None),
+                    'date': getattr(get_mh_from_past(crypto), 'date', None),
+                    'one_hour': self._get_mh_change_with_colors(crypto, hours=1),
+                    'twenty_four_hours': self._get_mh_change_with_colors(crypto, hours=24),
+                    'three_days': self._get_mh_change_with_colors(crypto, days=3),
+                    'seven_days': self._get_mh_change_with_colors(crypto, days=7),
+                    'thirty_days': self._get_mh_change_with_colors(crypto, days=30),
+                } for crypto in cryptos
+            ],
+            'error': ''
+        }
+
+        return render(request, self.template_name, return_dict)
+
+    def _get_mh_change_with_colors(self, crypto, **kwargs):
         _mh_change = get_mh_change(crypto, **kwargs)
 
         if _mh_change > 0.0:
@@ -27,33 +50,6 @@ def get_cryptos_data():
         return '<p class="text-{color}">{change:+.2f}%</p>'.format(
             color=color, change=_mh_change
         )
-
-    cryptos = CryptoModel.objects.all().order_by('long_name')
-    return_dict = {
-        'cryptos': [
-            {
-                'name': crypto.long_name,
-                'price': getattr(get_mh_from_past(crypto), 'price', None),
-                'one_hour': get_mh_change_with_colors(crypto, hours=1),
-                'twenty_four_hours': get_mh_change_with_colors(crypto, hours=24),
-                'three_days': get_mh_change_with_colors(crypto, days=3),
-                'seven_days': get_mh_change_with_colors(crypto, days=7),
-                'thirty_days': get_mh_change_with_colors(crypto, days=30),
-            } for crypto in cryptos],
-        'error': ''
-    }
-
-    return return_dict
-
-
-class CryptoView(View):
-    template_name = "crypto/cryptos.html"
-
-    def get(self, request):
-        if not self.request.user.is_authenticated:
-            return HttpResponseRedirect(reverse('registration:login'))
-
-        return render(request, self.template_name, get_cryptos_data())
 
 
 class RulesetsView(View):
