@@ -6,8 +6,6 @@ services:
       context: .
       dockerfile: ./Dockerfile
     restart: unless-stopped
-    ports:
-      - 8001:8001
     volumes:
       - ./:/app
     networks:
@@ -29,8 +27,8 @@ services:
       - crypto-backend
     env_file: local.env
     depends_on:
-      - redis
       - db
+      - redis
 
   nginx:
     image: nginx:alpine

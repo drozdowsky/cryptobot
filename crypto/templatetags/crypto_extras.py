@@ -10,11 +10,11 @@ def hash(h, key):
 
 @register.filter
 def reverse_trade(h):
-    if h == 'E':
-        return 'Email'
-    elif h == 'B':
-        return 'Buy'
-    elif h == 'S':
-        return 'Sell'
+    if h == "E":
+        return "Email"
+    elif h == "B":
+        return "Buy"
+    elif h == "S":
+        return "Sell"
 
-    return ''
+    return ""

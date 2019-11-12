@@ -2,7 +2,7 @@ import requests
 import time
 import logging
 
-logger = logging.getLogger('MARKET.API')
+logger = logging.getLogger("MARKET.API")
 
 
 class NotInitializedResponse(Exception):
@@ -37,7 +37,9 @@ class Request:
             if self._status == 200:
                 break
 
-            logger.warning('Failed {url} with {status}'.format(url=self._url, status=self._status))
+            logger.warning(
+                "Failed {url} with {status}".format(url=self._url, status=self._status)
+            )
             retry = retry - 1
             time.sleep(3)
 

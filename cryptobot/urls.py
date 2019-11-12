@@ -19,8 +19,8 @@ from crypto.views import CryptoView
 
 
 urlpatterns = [
-    url(r'^$', CryptoView.as_view()),
-    url(r'^accounts/', include('registration.urls')),
-    url(r'^crypto/', include('crypto.urls')),
-    url(r'^admin/', admin.site.urls),
+    url(r"^$", CryptoView.as_view()),
+    url(r"^accounts/", include("registration.urls")),
+    url(r"^crypto/", include("crypto.urls")),
+    url(r"^admin/", admin.site.urls),
 ]

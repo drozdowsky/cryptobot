@@ -8,11 +8,11 @@ GT_POW = 0.25
 
 class GoogleTrends:
     TIME_MAPPING = {
-        1: 'now 1-d',
-        7: 'now 7-d',
-        30: 'today 1-m',
-        60: 'today 2-m',
-        90: 'today 3-m',
+        1: "now 1-d",
+        7: "now 7-d",
+        30: "today 1-m",
+        60: "today 2-m",
+        90: "today 3-m",
     }
 
     def __init__(self, keywords, day):
@@ -24,9 +24,9 @@ class GoogleTrends:
         try:
             date_format = self.TIME_MAPPING[self.day]
         except KeyError:
-            date_format = '{} {}'.format(
-                datetime.now().strftime('%Y-%m-%d'),
-                (datetime.now() - timedelta(days=self.day)).strftime('%Y-%m-%d')
+            date_format = "{} {}".format(
+                datetime.now().strftime("%Y-%m-%d"),
+                (datetime.now() - timedelta(days=self.day)).strftime("%Y-%m-%d"),
             )
 
         self.request.build_payload(self.keywords, timeframe=date_format)

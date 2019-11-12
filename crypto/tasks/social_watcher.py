@@ -6,16 +6,13 @@ from crypto.models import get_or_create_crypto_model, SocialHistoric
 def run_social_watcher_task(logger):
     # FIXME: crypto_hardcoded
     try:
-        crypto_model = get_or_create_crypto_model('Ethereum', 'ETH')
+        crypto_model = get_or_create_crypto_model("Ethereum", "ETH")
         gtrends_7day = get_crypto_trend_ratio(crypto_model, 7)
-        sh = SocialHistoric(
-            crypto=crypto_model,
-            gtrends_top_7d=gtrends_7day
-        )
+        sh = SocialHistoric(crypto=crypto_model, gtrends_top_7d=gtrends_7day)
         # datetime = auto_now_add = True
         sh.save()
     except Exception as ex:
-        logger.error('[SWT] {ex}.'.format(ex=str(ex)))
+        logger.error("[SWT] {ex}.".format(ex=str(ex)))
         return None
 
     return sh

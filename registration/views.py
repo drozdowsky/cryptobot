@@ -10,7 +10,7 @@ from registration import models
 
 
 class CryptoUserCreationForm(UserCreationForm):
-    email = forms.EmailField(required=True, label='Email')
+    email = forms.EmailField(required=True, label="Email")
 
     class Meta:
         model = models.User
@@ -26,37 +26,38 @@ class CryptoUserCreationForm(UserCreationForm):
 
 def register(request):
     token = {}
-    if request.method == 'POST':
+    if request.method == "POST":
         form = CryptoUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
 
             new_user = authenticate(
-                username=form.cleaned_data['username'],
-                password=form.cleaned_data['password1'],
-                email=form.cleaned_data['email'],
+                username=form.cleaned_data["username"],
+                password=form.cleaned_data["password1"],
+                email=form.cleaned_data["email"],
             )
 
             login(request, new_user)
-            return HttpResponseRedirect(reverse('registration:registration_complete'))
+            return HttpResponseRedirect(reverse("registration:registration_complete"))
         else:
-            token['error'] = 'Error! Password must contain number, special character and length should be at least 8 chars.'
-    elif request.method == 'GET':
+            token[
+                "error"
+            ] = "Error! Password must contain number, special character and length should be at least 8 chars."
+    elif request.method == "GET":
         form = CryptoUserCreationForm()
     else:
         form = None
 
     token.update(csrf(request))
-    token['form'] = form
-    return render(request, 'registration/registration_form.html', token)
+    token["form"] = form
+    return render(request, "registration/registration_form.html", token)
 
 
 def registration_complete(request):
-    return render(request, 'registration/registration_complete.html')
+    return render(request, "registration/registration_complete.html")
 
 
 def loggedin(request):
     return render(
-        request, 'registration/loggedin.html',
-        {'username': request.user.username}
+        request, "registration/loggedin.html", {"username": request.user.username}
     )

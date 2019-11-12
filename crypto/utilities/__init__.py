@@ -15,9 +15,7 @@ def get_mh_from_past(crypto, timedelta_=None):
     past_time = timezone.now() - timedelta_
 
     return MarketHistoric.objects.filter(
-        crypto=crypto,
-        date__gte=past_time,
-        date__lte=past_time + timedelta(minutes=5),
+        crypto=crypto, date__gte=past_time, date__lte=past_time + timedelta(minutes=5),
     ).first()
 
 
@@ -28,9 +26,7 @@ def get_sh_from_past(crypto, timedelta_=None):
     past_time = timezone.now() - timedelta_
 
     return SocialHistoric.objects.filter(
-        crypto=crypto,
-        date__gte=past_time,
-        date__lte=past_time + timedelta(minutes=5),
+        crypto=crypto, date__gte=past_time, date__lte=past_time + timedelta(minutes=5),
     ).first()
 
 

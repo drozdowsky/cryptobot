@@ -16,9 +16,7 @@ class RuleCheckerEmptyTest(BaseTest):
 
     def create_rule(self, type_of_rule, value):
         return Rule.objects.create(
-            rule_set=self.ruleset,
-            type_of_rule=type_of_rule,
-            value=value
+            rule_set=self.ruleset, type_of_rule=type_of_rule, value=value
         )
 
     def create_test_type_of_rule(self, type_of_rule, val_when_true, val_when_false):
@@ -70,7 +68,7 @@ class RuleCheckerTest(BaseTest):
         self.old_trade = Trade.objects.create(
             type_of_trade=self.ruleset.type_of_ruleset,
             rule_set=self.ruleset,
-            price=Decimal('250.0'),
+            price=Decimal("250.0"),
             date=(timezone.now() - timezone.timedelta(hours=1)),
         )
         self.mp = MarketWatcherParser(self.mh, LOGGER)
@@ -79,9 +77,7 @@ class RuleCheckerTest(BaseTest):
 
     def create_rule(self, type_of_rule, value):
         return Rule.objects.create(
-            rule_set=self.ruleset,
-            type_of_rule=type_of_rule,
-            value=value
+            rule_set=self.ruleset, type_of_rule=type_of_rule, value=value
         )
 
     def create_test_type_of_rule(self, type_of_rule, val_when_true, val_when_false):

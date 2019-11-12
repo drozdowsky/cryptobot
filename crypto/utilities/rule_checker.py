@@ -17,7 +17,7 @@ class RuleChecker(object):
 
         for rule in self.ruleset.rules.all():
             tof = rule.RULE_TYPES_DICT.get(rule.type_of_rule, None)
-            _func = getattr(self, 'get_' + str(tof), None)
+            _func = getattr(self, "get_" + str(tof), None)
             if _func:
                 _result = _func(rule)
                 if _result is False:
@@ -95,14 +95,14 @@ class RuleChecker(object):
 
     def _get_latest_trade(self):
         if not self._latest_trade:
-            self._latest_trade = Trade.objects.filter(
-                rule_set=self.ruleset
-            ).order_by('-date').first()
+            self._latest_trade = (
+                Trade.objects.filter(rule_set=self.ruleset).order_by("-date").first()
+            )
 
         if not self._latest_trade:
             self._latest_trade = Trade.objects.create(
                 rule_set=self.ruleset,
-                type_of_trade='E',
+                type_of_trade="E",
                 price=self.mp.get_last_value(),
             )
 

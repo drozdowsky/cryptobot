@@ -10,26 +10,27 @@ def run_market_watcher_task(logger):
     # FIXME: crypto_hardcoded
     # FIXME: currency_hardocded
     try:
-        crypto_model = get_or_create_crypto_model('Ethereum', 'ETH')
-        bb = BitBay('ETH', 'PLN')
+        crypto_model = get_or_create_crypto_model("Ethereum", "ETH")
+        bb = BitBay("ETH", "PLN")
         bid_val, ask_val = bb.bids_value, bb.asks_value
         transaction_value = bb.transaction_value / 50
         last = Decimal(bb.last)
 
         mh = MarketHistoric(
-            crypto=crypto_model, price=last,
-            bids_value=bid_val, asks_value=ask_val,
+            crypto=crypto_model,
+            price=last,
+            bids_value=bid_val,
+            asks_value=ask_val,
             avg_transaction_value=transaction_value,
-            response_json=bb.json
+            response_json=bb.json,
         )
         # datetime = auto_now_add = True
         mh.save()
     except Exception as ex:
-        logger.error('[MWT] {ex}.'.format(ex=str(ex)))
+        logger.error("[MWT] {ex}.".format(ex=str(ex)))
         return None
 
     return mh
-
 
 
 class MarketWatcherParser:
@@ -59,11 +60,11 @@ class MarketWatcherParser:
             crypto = MarketHistoric.objects.filter(
                 date__gte=timezone.now() - _timedelta - timezone.timedelta(minutes=5),
                 date__lte=timezone.now() - _timedelta,
-            ).latest('date')
+            ).latest("date")
         except Exception as e:
             value = self.get_last_value()
             self.logger.warning(
-                'get_value_from_past [E]: {} - returning {} ({})'.format(
+                "get_value_from_past [E]: {} - returning {} ({})".format(
                     str(e), value, str(_timedelta)
                 )
             )
@@ -78,25 +79,37 @@ class MarketWatcherParser:
 
     def get_ratio_multiplier(self, divider=22, **timedelta):
         return 1 / max(
-            min(1 + (
-                self.get_ratio_from_past(timezone.timedelta(**timedelta)) / divider
-            ), 2.0), 0.5
+            min(
+                1
+                + (self.get_ratio_from_past(timezone.timedelta(**timedelta)) / divider),
+                2.0,
+            ),
+            0.5,
         )
 
     def get_market_bot_multiplier(self):
-        return reduce(lambda x, y: x * y, [
-            self.get_ratio_bids_asks_pow(),
-            self.get_ratio_multiplier(22, days=7),
-            self.get_ratio_multiplier(16, days=1),
-        ])
+        return reduce(
+            lambda x, y: x * y,
+            [
+                self.get_ratio_bids_asks_pow(),
+                self.get_ratio_multiplier(22, days=7),
+                self.get_ratio_multiplier(16, days=1),
+            ],
+        )
 
     def process_crypto(self):
         return {
-            'Ratio from 1h ago': self.get_ratio_multiplier(12, hours=7),  # FIXME: hardcoded_constant - 12
-            'Ratio from 24h ago:': self.get_ratio_multiplier(16, days=1),  # FIXME: hardcoded_constant - 16
-            'Ratio from 7d ago': self.get_ratio_multiplier(22, days=7),   # FIXME: hardcoded_constant - 22
-            'Ratio bid/ask pow': self.get_ratio_bids_asks_pow(),
-            'Crypto multiplier': self.get_market_bot_multiplier()
+            "Ratio from 1h ago": self.get_ratio_multiplier(
+                12, hours=7
+            ),  # FIXME: hardcoded_constant - 12
+            "Ratio from 24h ago:": self.get_ratio_multiplier(
+                16, days=1
+            ),  # FIXME: hardcoded_constant - 16
+            "Ratio from 7d ago": self.get_ratio_multiplier(
+                22, days=7
+            ),  # FIXME: hardcoded_constant - 22
+            "Ratio bid/ask pow": self.get_ratio_bids_asks_pow(),
+            "Crypto multiplier": self.get_market_bot_multiplier(),
         }
 
     # ideas

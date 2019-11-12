@@ -17,15 +17,15 @@ def fetch_social_data():
 
 
 def run_executor():
-    mh = MarketHistoric.objects.latest('date')
+    mh = MarketHistoric.objects.latest("date")
 
-    if not mh or mh.date+timedelta(minutes=5) < timezone.now():
+    if not mh or mh.date + timedelta(minutes=5) < timezone.now():
         LOGGER.error("run_executor: no recent MarketHistoric, task did not started")
         return 1
 
-    sh = SocialHistoric.objects.latest('date')
+    sh = SocialHistoric.objects.latest("date")
 
-    if not sh or sh.date+timedelta(minutes=10) < timezone.now():
+    if not sh or sh.date + timedelta(minutes=10) < timezone.now():
         LOGGER.error("run_executor: no recent SocialHistoric, task did not started")
         return 2
 
@@ -36,6 +36,7 @@ def run_executor():
 
 def run_ghetto_way():
     from time import sleep
+
     while True:
         try:
             fetch_market_data()
@@ -43,4 +44,4 @@ def run_ghetto_way():
             run_executor()
             sleep(60)
         except Exception as ex:
-            print('run_ghetto_way: {ex}'.format(ex=str(ex)))
+            print("run_ghetto_way: {ex}".format(ex=str(ex)))

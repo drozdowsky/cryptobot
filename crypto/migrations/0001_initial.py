@@ -17,91 +17,229 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='CryptoModel',
+            name="CryptoModel",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('short_name', models.CharField(max_length=11, unique=True)),
-                ('long_name', models.CharField(max_length=32, unique=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("short_name", models.CharField(max_length=11, unique=True)),
+                ("long_name", models.CharField(max_length=32, unique=True)),
             ],
         ),
         migrations.CreateModel(
-            name='RuleSet',
+            name="RuleSet",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=128)),
-                ('type_of_ruleset', models.CharField(choices=[('E', 'email_only'), ('B', 'buy'), ('S', 'sell')], default='E', max_length=1)),
-                ('crypto', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rulesets', to='crypto.CryptoModel')),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=128)),
+                (
+                    "type_of_ruleset",
+                    models.CharField(
+                        choices=[("E", "email_only"), ("B", "buy"), ("S", "sell")],
+                        default="E",
+                        max_length=1,
+                    ),
+                ),
+                (
+                    "crypto",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="rulesets",
+                        to="crypto.CryptoModel",
+                    ),
+                ),
+                (
+                    "owner",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Trade',
+            name="Trade",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateTimeField(default=django.utils.timezone.now)),
-                ('type_of_trade', models.CharField(choices=[('E', 'email_only'), ('B', 'buy'), ('S', 'sell')], max_length=1)),
-                ('amount', models.DecimalField(decimal_places=8, default=0.0, max_digits=19)),
-                ('price', models.DecimalField(decimal_places=2, default=1.0, max_digits=19)),
-                ('rule_set', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='trades', to='crypto.RuleSet')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.DateTimeField(default=django.utils.timezone.now)),
+                (
+                    "type_of_trade",
+                    models.CharField(
+                        choices=[("E", "email_only"), ("B", "buy"), ("S", "sell")],
+                        max_length=1,
+                    ),
+                ),
+                (
+                    "amount",
+                    models.DecimalField(decimal_places=8, default=0.0, max_digits=19),
+                ),
+                (
+                    "price",
+                    models.DecimalField(decimal_places=2, default=1.0, max_digits=19),
+                ),
+                (
+                    "rule_set",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="trades",
+                        to="crypto.RuleSet",
+                    ),
+                ),
             ],
-            options={
-                'ordering': ('-date',),
-                'get_latest_by': 'date',
-            },
+            options={"ordering": ("-date",), "get_latest_by": "date",},
         ),
         migrations.CreateModel(
-            name='SocialHistoric',
+            name="SocialHistoric",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('gtrends_top_7d', models.FloatField()),
-                ('date', models.DateTimeField(default=django.utils.timezone.now)),
-                ('crypto', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='crypto.CryptoModel')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("gtrends_top_7d", models.FloatField()),
+                ("date", models.DateTimeField(default=django.utils.timezone.now)),
+                (
+                    "crypto",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="crypto.CryptoModel",
+                    ),
+                ),
             ],
-            options={
-                'ordering': ('date',),
-                'get_latest_by': 'date',
-            },
+            options={"ordering": ("date",), "get_latest_by": "date",},
         ),
         migrations.CreateModel(
-            name='MarketHistoric',
+            name="MarketHistoric",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('bids_value', models.FloatField()),
-                ('asks_value', models.FloatField()),
-                ('avg_transaction_value', models.FloatField()),
-                ('price', models.DecimalField(decimal_places=2, default=1.0, max_digits=19)),
-                ('response_json', django.contrib.postgres.fields.jsonb.JSONField()),
-                ('date', models.DateTimeField(default=django.utils.timezone.now)),
-                ('crypto', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='crypto.CryptoModel')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("bids_value", models.FloatField()),
+                ("asks_value", models.FloatField()),
+                ("avg_transaction_value", models.FloatField()),
+                (
+                    "price",
+                    models.DecimalField(decimal_places=2, default=1.0, max_digits=19),
+                ),
+                ("response_json", django.contrib.postgres.fields.jsonb.JSONField()),
+                ("date", models.DateTimeField(default=django.utils.timezone.now)),
+                (
+                    "crypto",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="crypto.CryptoModel",
+                    ),
+                ),
             ],
-            options={
-                'ordering': ('date',),
-                'get_latest_by': 'date',
-            },
+            options={"ordering": ("date",), "get_latest_by": "date",},
         ),
         migrations.CreateModel(
-            name='Rule',
+            name="Rule",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('value', models.FloatField()),
-                ('type_of_rule', models.CharField(choices=[('BEL', 'below'), ('ABO', 'above'), ('CGA', 'change_above'), ('CGB', 'change_below'), ('CPA', 'change_perc_above'), ('CPB', 'change_perc_below'), ('AHS', 'after_minutes'), ('MBA', 'market_bot_above'), ('MBB', 'market_bot_below'), ('SBA', 'social_bot_above'), ('SBB', 'social_bot_below')], max_length=3)),
-                ('rule_set', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rules', to='crypto.RuleSet')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("value", models.FloatField()),
+                (
+                    "type_of_rule",
+                    models.CharField(
+                        choices=[
+                            ("BEL", "below"),
+                            ("ABO", "above"),
+                            ("CGA", "change_above"),
+                            ("CGB", "change_below"),
+                            ("CPA", "change_perc_above"),
+                            ("CPB", "change_perc_below"),
+                            ("AHS", "after_minutes"),
+                            ("MBA", "market_bot_above"),
+                            ("MBB", "market_bot_below"),
+                            ("SBA", "social_bot_above"),
+                            ("SBB", "social_bot_below"),
+                        ],
+                        max_length=3,
+                    ),
+                ),
+                (
+                    "rule_set",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="rules",
+                        to="crypto.RuleSet",
+                    ),
+                ),
             ],
-            options={
-                'unique_together': {('rule_set', 'type_of_rule')},
-            },
+            options={"unique_together": {("rule_set", "type_of_rule")},},
         ),
         migrations.CreateModel(
-            name='CryptoWallet',
+            name="CryptoWallet",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('amount', models.DecimalField(decimal_places=8, default=0.0, max_digits=19)),
-                ('date', models.DateTimeField(default=django.utils.timezone.now)),
-                ('crypto', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='crypto.CryptoModel')),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "amount",
+                    models.DecimalField(decimal_places=8, default=0.0, max_digits=19),
+                ),
+                ("date", models.DateTimeField(default=django.utils.timezone.now)),
+                (
+                    "crypto",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="crypto.CryptoModel",
+                    ),
+                ),
+                (
+                    "owner",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
-            options={
-                'unique_together': {('owner', 'crypto')},
-            },
+            options={"unique_together": {("owner", "crypto")},},
         ),
     ]
