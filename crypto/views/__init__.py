@@ -1,4 +1,5 @@
 from datetime import timedelta
+import logging
 
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -8,6 +9,9 @@ from django import forms
 
 from crypto.models import CryptoModel, RuleSet, Rule, Trade, MarketHistoric
 from crypto.utilities import get_mh_change, get_mh_from_past
+from crypto.tasks.market_watcher import MarketWatcherParser
+
+LOGGER = logging.getLogger("crypto.views")
 
 
 class CryptoView(View):
@@ -18,12 +22,22 @@ class CryptoView(View):
             return HttpResponseRedirect(reverse("registration:login"))
 
         cryptos = CryptoModel.objects.all().order_by("long_name")
-        return_dict = {
-            "cryptos": [
+        data = {
+            "cryptos": [],
+            "error": "",
+        }
+
+        for crypto in cryptos:
+            mh = get_mh_from_past(crypto)
+            if mh:
+                market_value = MarketWatcherParser(mh, LOGGER).get_market_bot_multiplier()
+            else:
+                market_value = None
+            data["cryptos"].append(
                 {
                     "name": crypto.long_name,
-                    "price": getattr(get_mh_from_past(crypto), "price", None),
-                    "date": getattr(get_mh_from_past(crypto), "date", None),
+                    "price": getattr(mh, "price", None),
+                    "date": getattr(mh, "date", None),
                     "one_hour": self._get_mh_change_with_colors(crypto, hours=1),
                     "twenty_four_hours": self._get_mh_change_with_colors(
                         crypto, hours=24
@@ -31,26 +45,31 @@ class CryptoView(View):
                     "three_days": self._get_mh_change_with_colors(crypto, days=3),
                     "seven_days": self._get_mh_change_with_colors(crypto, days=7),
                     "thirty_days": self._get_mh_change_with_colors(crypto, days=30),
+                    "market_watcher": self._get_color_by_bound(
+                        market_value,
+                        bound=1.0,
+                        # FIXME: don't.
+                        format_text='<p title="MarketBot Value from 0.0 to 2.0." class="text-{color}">{value:.2f}</p>'
+                    )
                 }
-                for crypto in cryptos
-            ],
-            "error": "",
-        }
+            )
 
-        return render(request, self.template_name, return_dict)
+        return render(request, self.template_name, data)
 
     def _get_mh_change_with_colors(self, crypto, **kwargs):
-        _mh_change = get_mh_change(crypto, **kwargs)
+        mh_change = get_mh_change(crypto, **kwargs)
+        return self._get_color_by_bound(mh_change)
 
-        if _mh_change > 0.0:
+    def _get_color_by_bound(self, value, bound=0.0, format_text=''):
+        if value > bound:
             color = "success"
-        elif _mh_change < 0.0:
+        elif value < bound:
             color = "danger"
         else:
             color = "dark"
 
-        return '<p class="text-{color}">{change:+.2f}%</p>'.format(
-            color=color, change=_mh_change
+        return (format_text or '<p class="text-{color}">{value:+.2f}%</p>').format(
+            color=color, value=value
         )
 
 

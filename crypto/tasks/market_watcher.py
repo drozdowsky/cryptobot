@@ -1,4 +1,5 @@
 from decimal import Decimal
+from functools import reduce
 
 from django.utils import timezone
 

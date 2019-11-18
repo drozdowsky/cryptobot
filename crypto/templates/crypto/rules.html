@@ -21,7 +21,7 @@
             <tr>
                 <td></td>
                 <td><b>{{ rule_types|hash:rule.type_of_rule }}</b></td>
-                <td><b>{{ rule.value }}</b></td>
+                <td class="text-right"><b>{{ rule.value }}</b></td>
                 <td></td>
                 <td>
                     <a class="btn btn-light" href="{% url 'crypto:remove_rule' crypto rule.rule_set_id rule.id %}" role="button">Remove</a>              

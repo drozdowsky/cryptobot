@@ -11,26 +11,28 @@
         <table class="table">
             <tr>
                 <th scope="col"></th>
-                <th scope="col">Price</th>
+                <th scope="col" class="text-right">Price</th>
                 <th scope="col"></th>
-                <th scope="col">1h</th>
-                <th scope="col">24h</th>
-                <th scope="col">3d</th>
-                <th scope="col">7d</th>
-                <th scope="col">30d</th>
+                <th scope="col" class="text-right">1h</th>
+                <th scope="col" class="text-right">24h</th>
+                <th scope="col" class="text-right">3d</th>
+                <th scope="col" class="text-right">7d</th>
+                <th scope="col" class="text-right">30d</th>
+                <th scope="col" class="text-right">MarketBot</th>
                 <th scope="col">Updated</th>
                 <th scope="col"></th>
             </tr>
         {% for crypto in cryptos %}
             <tr>
                 <td><b>{{ crypto.name }}</b></td>
-                <td>{{ crypto.price }}PLN</td>
+                <td class="text-right">{{ crypto.price }}PLN</td>
                 <td></td>
-                <td>{{ crypto.one_hour|safe }}</td>
-                <td>{{ crypto.twenty_four_hours|safe }}</td>
-                <td>{{ crypto.three_days|safe }}</td>
-                <td>{{ crypto.seven_days|safe }}</td>
-                <td>{{ crypto.thirty_days|safe }}</td>
+                <td class="text-right">{{ crypto.one_hour|safe }}</td>
+                <td class="text-right">{{ crypto.twenty_four_hours|safe }}</td>
+                <td class="text-right">{{ crypto.three_days|safe }}</td>
+                <td class="text-right">{{ crypto.seven_days|safe }}</td>
+                <td class="text-right">{{ crypto.thirty_days|safe }}</td>
+                <td class="text-right">{{ crypto.market_watcher|safe }}</td>
                 <td>{{ crypto.date }}</td>
                 <td><a class="btn btn-light" href="{% url 'crypto:history' crypto.name 1 %}" role="button">History</a> <a class="btn btn-dark" href="{% url 'crypto:rulesets' crypto.name %}" role="button">My rulesets</a></td>
             </tr>
