@@ -19,7 +19,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    command: celery -A crypto worker --app=cryptobot.celery:app --loglevel=info -B
+    command: celery -A crypto worker --app=cryptobot.celery:app --loglevel=info -B --logfile=_logs/django.log
     restart: unless-stopped
     volumes:
       - ./:/app

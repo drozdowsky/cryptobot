@@ -37,7 +37,7 @@ class Executor(object):
 
         self.logger.info("[EXEC] Starting processing rulesets!")
         for rs in qs:
-            self.logger.info("[EXEC] ruleset(%d): %s", rs.id, rs.type_of_ruleset)
+            self.logger.debug("[EXEC] ruleset(%d): %s", rs.id, rs.type_of_ruleset)
             rc = RuleChecker(self.mp, self.sp, self.crypto, rs)
             try:
                 _result = rc.run()
@@ -46,6 +46,8 @@ class Executor(object):
             else:
                 if _result:
                     self.process_result(_result, rs)
+                else:
+                    self.logger.debug("[EXEC] ruleset(%d): %s", rs.id, str(_result))
 
         self.logger.info("[EXEC] Finished processing rulesets!")
 
