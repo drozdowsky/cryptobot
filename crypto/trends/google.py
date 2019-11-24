@@ -55,4 +55,4 @@ class SignificanceOfTrends:
 
 def get_crypto_trend_ratio(crypto, day=7):
     sot = SignificanceOfTrends(day, crypto)
-    return sot.get_value_ratio()
+    return min(0, max(2, sot.get_value_ratio()))

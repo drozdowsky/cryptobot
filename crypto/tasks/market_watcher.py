@@ -89,7 +89,7 @@ class MarketWatcherParser:
         )
 
     def get_market_bot_multiplier(self):
-        return reduce(
+        market_bot_value = reduce(
             lambda x, y: x * y,
             [
                 self.get_ratio_bids_asks_pow(),
@@ -97,6 +97,7 @@ class MarketWatcherParser:
                 self.get_ratio_multiplier(16, days=1),
             ],
         )
+        return min(0, max(2, market_bot_value))
 
     def process_crypto(self):
         return {
