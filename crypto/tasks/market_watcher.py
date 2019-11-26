@@ -97,7 +97,7 @@ class MarketWatcherParser:
                 self.get_ratio_multiplier(16, days=1),
             ],
         )
-        return min(0, max(2, market_bot_value))
+        return min(2, max(0, market_bot_value))
 
     def process_crypto(self):
         return {
