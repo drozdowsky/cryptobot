@@ -25,7 +25,6 @@ def send_email(recipient, subject, body):
 
     server = smtplib.SMTP_SSL(settings.EMAIL_HOST, int(settings.EMAIL_PORT))
     server.ehlo()
-
     server.login(mail_user, mail_pwd)
 
     server.sendmail(FROM, TO, message.as_string())
@@ -78,7 +77,7 @@ class MailGenerator:
         """
         yesterday_price = self.get_past_price()
         title_list = [
-            "[{}]".format(self.rs.type_of_ruleset),
+            "[{}: {}]".format(self.rs.type_of_ruleset, self.rs.name),
             "{}".format(self.crypto.long_name),
             yesterday_price,
         ]
@@ -137,12 +136,12 @@ class MailGenerator:
         # market bot _above, _below
         mb_a, mb_b = self.results.get("MBA"), self.results.get("MBB")
         if mb_a or mb_b:
-            body_list.append("Market Bot: {}".format(mb_a or mb_b))
+            body_list.append("Market Bot: {.:2f}".format(mb_a or mb_b))
 
         # social bot _above, _below
         sb_a, sb_b = self.results.get("SBA"), self.results.get("SBB")
         if sb_a or sb_b:
-            body_list.append("Social Bot: {}".format(sb_a or sb_b))
+            body_list.append("Social Bot: {:.2f}".format(sb_a or sb_b))
 
     def get_past_price(self):
         if not self.past_price:
