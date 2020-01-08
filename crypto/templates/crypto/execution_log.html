@@ -13,11 +13,11 @@
         <table class="table">
             <tr>
                 <th scope="col"></th>
-                <th scope="col">Date</th>
+                <th scope="col"><a href="?order_by=date">Date</a></th>
                 <th scope="col"></th>
-                <th scope="col">Price (PLN)</th>
-                <th scope="col">Amount ({{crypto.short_name}})</th>
-                <th scope="col">Type</th>
+                <th scope="col"><a href="?order_by=price">Price (PLN)</a></th>
+                <th scope="col"><a href="?order_by=amount">Amount ({{crypto.short_name}})</a></th>
+                <th scope="col"><a href="?order_by=type_of_trade">Type</a></th>
                 <th scope="col"></th>
             </tr>
         {% for log in trades %}

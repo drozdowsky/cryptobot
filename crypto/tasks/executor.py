@@ -25,7 +25,7 @@ class Executor(object):
             )
             .order_by("-date")
             .first()
-            or self.mp.mh.price
+            or self.mp.mh
         )
 
     def run(self):
