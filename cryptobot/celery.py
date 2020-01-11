@@ -19,7 +19,7 @@ def setup_periodic_tasks(sender, **kwargs):
     # fetch market_watcher
     sender.add_periodic_task(300.0, fetch_social_data.s(), name="fetch_social_data")
     # run
-    sender.add_periodic_task(120.0, run_executor.s(), name="run_executor")
+    sender.add_periodic_task(60.0, run_executor.s(), name="run_executor")
 
 
 @app.task()

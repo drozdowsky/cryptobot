@@ -22,7 +22,8 @@ class CryptoView(View):
         if not self.request.user.is_authenticated:
             return HttpResponseRedirect(reverse("registration:login"))
 
-        cryptos = CryptoModel.objects.all().order_by("long_name")
+        order_by = request.GET.get("order_by", "long_name")
+        cryptos = CryptoModel.objects.all().order_by(order_by)
         data = {
             "cryptos": [],
             "error": "",
@@ -32,10 +33,14 @@ class CryptoView(View):
             mh, sh = get_mh_from_past(crypto), get_sh_from_past(crypto)
             market_value, social_value = None, None
             if mh:
-                market_value = MarketWatcherParser(mh, LOGGER).get_market_bot_multiplier()
+                market_value = MarketWatcherParser(
+                    mh, LOGGER
+                ).get_market_bot_multiplier()
             if sh:
-                social_value = SocialWatcherParser(sh, LOGGER).get_social_bot_multiplier()
-   
+                social_value = SocialWatcherParser(
+                    sh, LOGGER
+                ).get_social_bot_multiplier()
+
             data["cryptos"].append(
                 {
                     "name": crypto.long_name,
@@ -52,13 +57,13 @@ class CryptoView(View):
                         market_value,
                         bound=1.0,
                         # FIXME: don't.
-                        format_text='<p title="MarketBot Value from 0.0 to 2.0." class="text-{color}">{value:.2f}</p>'
+                        format_text='<p title="MarketBot Value from 0.0 to 2.0." class="text-{color}">{value:.2f}</p>',
                     ),
                     "social_watcher": self._get_color_by_bound(
                         social_value,
                         bound=1.0,
                         # FIXME: don't.
-                        format_text='<p title="SocialBot Value from 0.0 to 2.0." class="text-{color}">{value:.2f}</p>'
+                        format_text='<p title="SocialBot Value from 0.0 to 2.0." class="text-{color}">{value:.2f}</p>',
                     ),
                 }
             )
@@ -69,7 +74,10 @@ class CryptoView(View):
         mh_change = get_mh_change(crypto, **kwargs)
         return self._get_color_by_bound(mh_change)
 
-    def _get_color_by_bound(self, value, bound=0.0, format_text=''):
+    def _get_color_by_bound(self, value, bound=0.0, format_text=""):
+        if not value:
+            value = 0.0
+
         if value > bound:
             color = "success"
         elif value < bound:
@@ -380,7 +388,8 @@ class ExecutionLogView(View):
         except (RuleSet.DoesNotExist, CryptoModel.DoesNotExist):
             return HttpResponseRedirect(reverse("crypto:main"))
         else:
-            trades = Trade.objects.filter(rule_set=ruleset).order_by("-date")
+            order_by = request.GET.get("order_by", "-date")
+            trades = Trade.objects.filter(rule_set=ruleset).order_by(order_by)
 
         response_data = {
             # mock
@@ -404,9 +413,10 @@ class HistoryView(View):
         if page <= 0:
             return HttpResponseRedirect(reverse("crypto:main"))
 
+        order_by = request.GET.get("order_by", "-date")
         q_mh = MarketHistoric.objects.filter(
             crypto__long_name=crypto.capitalize()
-        ).order_by("-date")[(page - 1) * 11 : page * 11]
+        ).order_by(order_by)[(page - 1) * 11 : page * 11]
 
         response_data = {
             # mock
