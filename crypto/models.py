@@ -103,6 +103,7 @@ class Rule(models.Model):
     MBOT_BELOW = "MBB"
     SBOT_ABOVE = "SBA"
     SBOT_BELOW = "SBB"
+    EXEC_LIMIT = "EXL"
 
     RULE_TYPES_FULL = [
         (BELOW, "below", "Price is below (PLN)"),
@@ -118,6 +119,7 @@ class Rule(models.Model):
         (MBOT_BELOW, "market_bot_below", "Market Bot is below (0.0-2.0)"),
         (SBOT_ABOVE, "social_bot_above", "Social Bot is above (0.0-2.0)"),
         (SBOT_BELOW, "social_bot_below", "Social Bot is below (0.0-2.0)"),
+        (EXEC_LIMIT, "execution_limit", "Limit no. of executions"),
     ]
 
     RULE_TYPES = [(sc, full_name) for sc, full_name, _ in RULE_TYPES_FULL]
@@ -125,7 +127,6 @@ class Rule(models.Model):
     RULE_DESC = [(sc, desc) for sc, _, desc in RULE_TYPES_FULL]
     RULE_DESC_DICT = {sc: desc for sc, _, desc in RULE_TYPES_FULL}
 
-    #  unique_together = ('rule_set', 'value', 'type_of_rule')
     rule_set = models.ForeignKey(
         RuleSet, null=False, on_delete=models.CASCADE, related_name="rules"
     )

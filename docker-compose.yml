@@ -38,7 +38,7 @@ services:
       - 443:443
     volumes:
       - ./cryptobot/uwsgi_params:/app/cryptobot/uwsgi_params
-      - ./cryptobot/cryptobot_nginx.conf:/etc/nginx/conf.d/cryptobot_nginx.conf
+      - ./cryptobot/cryptobot_nginx.conf:/etc/nginx/conf.d/default.conf
       - ./static/:/app/static
     networks:
       - crypto-backend

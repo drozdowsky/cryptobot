@@ -60,6 +60,9 @@ class RuleCheckerEmptyTest(BaseTest):
     def test_social_bot_above(self):
         self.create_test_type_of_rule(Rule.SBOT_ABOVE, 0.9, 1.0)
 
+    def test_exec_limit(self):
+        self.create_test_type_of_rule(Rule.EXEC_LIMIT, 1, 0)
+
 
 class RuleCheckerTest(BaseTest):
     def setUp(self):
@@ -102,3 +105,6 @@ class RuleCheckerTest(BaseTest):
 
     def test_after_minutes(self):
         self.create_test_type_of_rule(Rule.AFTER_MINUTES, 50.0, 61.0)
+
+    def test_exec_limit(self):
+        self.create_test_type_of_rule(Rule.EXEC_LIMIT, 2, 1)

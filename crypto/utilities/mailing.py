@@ -60,21 +60,6 @@ class MailGenerator:
         return 0
 
     def generate_mail(self):
-        """
-            BELOW = 'BEL'
-            ABOVE = 'ABO'
-            CHANGE_ABOVE = 'CGA'
-            CHANGE_BELOW = 'CGB'
-            CHANGE_PERC_ABOVE = 'CPA'
-            CHANGE_PERC_BELOW = 'CPB'
-            MAX_VALUE_PERC = 'MVP'
-            MAX_VALUE = 'MVE'
-            AFTER_MINUTES = 'AHS'
-            MBOT_ABOVE = 'MBA'
-            MBOT_BELOW = 'MBB'
-            SBOT_ABOVE = 'SBA'
-            SBOT_BELOW = 'SBB'
-        """
         yesterday_price = self.get_past_price()
         title_list = [
             "[{}: {}]".format(self.rs.type_of_ruleset, self.rs.name),
@@ -142,6 +127,11 @@ class MailGenerator:
         sb_a, sb_b = self.results.get("SBA"), self.results.get("SBB")
         if sb_a or sb_b:
             body_list.append("Social Bot: {:.2f}".format(sb_a or sb_b))
+
+        # execution limit
+        ex_l = self.results.get("EXL")
+        if ex_l:
+            body_list.append("Remaining no. of executions: {}".format(ex_l))
 
     def get_past_price(self):
         if not self.past_price:

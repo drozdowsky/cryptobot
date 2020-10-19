@@ -135,3 +135,14 @@ class RuleChecker(object):
             return _social_multiplier
 
         return False
+
+    def get_execution_limit(self, rule):
+        if rule.value <= 0:
+            return False
+
+        trades = self.ruleset.trades.count()
+        remaining = rule.value - trades
+        if remaining <= 0:
+            return False
+
+        return remaining - 1
