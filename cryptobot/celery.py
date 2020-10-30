@@ -15,7 +15,7 @@ app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
     # fetch market_watcher
-    sender.add_periodic_task(120.0, fetch_market_data.s(), name="fetch_market_data")
+    sender.add_periodic_task(60.0, fetch_market_data.s(), name="fetch_market_data")
     # fetch market_watcher
     sender.add_periodic_task(300.0, fetch_social_data.s(), name="fetch_social_data")
     # run

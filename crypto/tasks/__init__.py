@@ -34,7 +34,7 @@ def run_executor():
 
         mp = market_watcher.MarketWatcherParser(mh, LOGGER)
         sp = social_watcher.SocialWatcherParser(sh, LOGGER)
-        executor.run_executor_task(LOGGER, mp, sp, crypto)
+        executor.run_executor_task(mp, sp, crypto, LOGGER)
 
 
 def run_ghetto_way():

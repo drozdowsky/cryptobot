@@ -7,7 +7,7 @@ from crypto.utilities.mailing import MailGenerator
 from crypto.utilities.rule_checker import RuleChecker
 
 
-def run_executor_task(logger, mp, sp, crypto_model):
+def run_executor_task(mp, sp, crypto_model, logger):
     Executor(mp, sp, crypto_model, logger).run()
 
 
