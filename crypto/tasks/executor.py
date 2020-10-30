@@ -7,9 +7,7 @@ from crypto.utilities.mailing import MailGenerator
 from crypto.utilities.rule_checker import RuleChecker
 
 
-def run_executor_task(logger, mp, sp):
-    # FIXME: hardcoded_crypto
-    crypto_model = get_or_create_crypto_model("Ethereum", "ETH")
+def run_executor_task(logger, mp, sp, crypto_model):
     Executor(mp, sp, crypto_model, logger).run()
 
 
@@ -35,7 +33,9 @@ class Executor(object):
             .prefetch_related("rules")
         )
 
-        self.logger.info("[EXEC] Starting processing rulesets!")
+        self.logger.info(
+            "[EXEC] Starting processing %s rulesets!", self.crypto.short_name
+        )
         for rs in qs:
             self.logger.debug("[EXEC] ruleset(%d): %s", rs.id, rs.type_of_ruleset)
             rc = RuleChecker(self.mp, self.sp, self.crypto, rs)

@@ -47,7 +47,7 @@ class SignificanceOfTrends:
         if self.result is None:
             self.build_results()
 
-        return self.result.get_values()[-1][0]
+        return self.result.values[-1][0]
 
     def get_value_ratio(self):
         return (self.get_value_for_last_results() / 100) * 2.0

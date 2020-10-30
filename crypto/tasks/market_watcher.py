@@ -7,12 +7,10 @@ from crypto.market.api import BitBay
 from crypto.models import get_or_create_crypto_model, MarketHistoric
 
 
-def run_market_watcher_task(logger):
-    # FIXME: crypto_hardcoded
+def run_market_watcher_task(crypto_model, logger):
     # FIXME: currency_hardocded
     try:
-        crypto_model = get_or_create_crypto_model("Ethereum", "ETH")
-        bb = BitBay("ETH", "PLN")
+        bb = BitBay(crypto_model.short_name.upper(), "PLN")
         bid_val, ask_val = bb.bids_value, bb.asks_value
         transaction_value = bb.transaction_value / 50
         last = Decimal(bb.last)

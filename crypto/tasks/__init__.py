@@ -3,35 +3,38 @@ from datetime import timedelta
 from django.utils import timezone
 
 from crypto.tasks import market_watcher, social_watcher, executor
-from crypto.models import MarketHistoric, SocialHistoric
+from crypto.models import MarketHistoric, SocialHistoric, CryptoModel
 
 LOGGER = get_task_logger(__name__)
 
 
 def fetch_market_data():
-    market_watcher.run_market_watcher_task(LOGGER)
+    for crypto in CryptoModel.objects.all():
+        market_watcher.run_market_watcher_task(crypto, LOGGER)
 
 
 def fetch_social_data():
-    social_watcher.run_social_watcher_task(LOGGER)
+    for crypto in CryptoModel.objects.all():
+        social_watcher.run_social_watcher_task(crypto, LOGGER)
 
 
 def run_executor():
-    mh = MarketHistoric.objects.latest("date")
+    for crypto in CryptoModel.objects.all():
+        mh = MarketHistoric.objects.filter(crypto=crypto).latest("date")
 
-    if not mh or mh.date + timedelta(minutes=5) < timezone.now():
-        LOGGER.error("run_executor: no recent MarketHistoric, task did not started")
-        return 1
+        if not mh or mh.date + timedelta(minutes=5) < timezone.now():
+            LOGGER.error("run_executor: no recent MarketHistoric, task did not started")
+            break
 
-    sh = SocialHistoric.objects.latest("date")
+        sh = SocialHistoric.objects.filter(crypto=crypto).latest("date")
 
-    if not sh or sh.date + timedelta(minutes=10) < timezone.now():
-        LOGGER.error("run_executor: no recent SocialHistoric, task did not started")
-        return 2
+        if not sh or sh.date + timedelta(minutes=10) < timezone.now():
+            LOGGER.error("run_executor: no recent SocialHistoric, task did not started")
+            break
 
-    mp = market_watcher.MarketWatcherParser(mh, LOGGER)
-    sp = social_watcher.SocialWatcherParser(sh, LOGGER)
-    executor.run_executor_task(LOGGER, mp, sp)
+        mp = market_watcher.MarketWatcherParser(mh, LOGGER)
+        sp = social_watcher.SocialWatcherParser(sh, LOGGER)
+        executor.run_executor_task(LOGGER, mp, sp, crypto)
 
 
 def run_ghetto_way():
