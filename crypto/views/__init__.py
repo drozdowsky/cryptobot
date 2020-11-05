@@ -33,6 +33,7 @@ class CryptoView(View):
             "cryptos": [],
             "error": "",
         }
+        min_date = None
 
         for crypto in cryptos:
             mh, sh = get_mh_from_past(crypto), get_sh_from_past(crypto)
@@ -48,11 +49,16 @@ class CryptoView(View):
 
             chart_data = get_data_for_crypto(crypto)
 
+            date = getattr(mh, "date", 0)
+            if min_date:
+                min_date = min(min_date, date)
+            else:
+                min_date = date
+
             data["cryptos"].append(
                 {
                     "name": crypto.long_name,
                     "price": getattr(mh, "price", None),
-                    "date": getattr(mh, "date", None),
                     "one_hour": self._get_mh_change_with_colors(crypto, hours=1),
                     "twenty_four_hours": self._get_mh_change_with_colors(
                         crypto, hours=24
@@ -75,6 +81,7 @@ class CryptoView(View):
                     "data": chart_data,
                 }
             )
+            data["date"] = min_date
 
         return render(request, self.template_name, data)
 
