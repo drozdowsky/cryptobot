@@ -8,7 +8,12 @@ from django.views import View
 from django import forms
 
 from crypto.models import CryptoModel, RuleSet, Rule, Trade, MarketHistoric
-from crypto.utilities import get_mh_change, get_mh_from_past, get_sh_from_past
+from crypto.utilities import (
+    get_mh_change,
+    get_mh_from_past,
+    get_sh_from_past,
+    get_data_for_crypto,
+)
 from crypto.tasks.market_watcher import MarketWatcherParser
 from crypto.tasks.social_watcher import SocialWatcherParser
 
@@ -41,6 +46,8 @@ class CryptoView(View):
                     sh, LOGGER
                 ).get_social_bot_multiplier()
 
+            chart_data = get_data_for_crypto(crypto)
+
             data["cryptos"].append(
                 {
                     "name": crypto.long_name,
@@ -65,6 +72,7 @@ class CryptoView(View):
                         # FIXME: don't.
                         format_text='<p title="SocialBot Value from 0.0 to 2.0." class="text-{color}">{value:.2f}</p>',
                     ),
+                    "data": chart_data,
                 }
             )
 

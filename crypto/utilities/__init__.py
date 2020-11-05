@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.utils import timezone
+from django.db.models import F
 
 from crypto.models import MarketHistoric, SocialHistoric
 
@@ -40,3 +41,23 @@ def get_mh_change(crypto, **timedelta_kwargs):
         return ((latest_price - old_price) / old_price) * 100
 
     return 0.0
+
+
+def get_data_for_crypto(crypto, timedelta_=None):
+    """Get price from 7 days (timedelta) to now, in chart format."""
+    if timedelta_ is None:
+        timedelta_ = timedelta(days=7)
+
+    past_time = timezone.now() - timedelta_
+    data = (
+        MarketHistoric.objects.filter(crypto=crypto, date__gte=past_time)
+        .annotate(id_mod=F("id") % 100)
+        .filter(id_mod=1)
+        .order_by("date")
+        .values_list("price", flat=True)
+    )
+
+    if data:
+        first_value = data[0]
+        data = [int(value - first_value) for value in data]
+    return data

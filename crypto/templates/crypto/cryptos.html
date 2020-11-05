@@ -1,5 +1,6 @@
 {% extends 'cryptobot/base.html' %}
 {% block head %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
 {% endblock head %}
 
 {% block header %}
@@ -20,7 +21,7 @@
                 <th scope="col" class="text-right">30d</th>
                 <th scope="col" class="text-right">MarketBot</th>
                 <th scope="col" class="text-right">SocialBot</th>
-                <th scope="col">Updated</th>
+                <th scope="col">Price diff. chart (7d)</th>
                 <th scope="col"></th>
             </tr>
         {% for crypto in cryptos %}
@@ -35,10 +36,57 @@
                 <td class="text-right">{{ crypto.thirty_days|safe }}</td>
                 <td class="text-right">{{ crypto.market_watcher|safe }}</td>
                 <td class="text-right">{{ crypto.social_watcher|safe }}</td>
-                <td>{{ crypto.date }}</td>
+                <td><canvas style="background-color: rgba(47, 79, 79, 0.1)" id="my{{ crypto.name }}" width="150" height="50"></canvas></td>
                 <td><a class="btn btn-light" href="{% url 'crypto:history' crypto.name 1 %}" role="button">History</a> <a class="btn btn-dark" href="{% url 'crypto:rulesets' crypto.name %}" role="button">My rulesets</a></td>
             </tr>
         {% endfor %}
         </table>
+    {% for crypto in cryptos %}
+    <script>
+    var ctx = document.getElementById('my{{ crypto.name }}').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: "",
+                data: {{ crypto.data|stringformat:"s" }},
+                backgroundColor: [
+                    'rgba(0, 100, 0, 0.2)',
+                ],
+            }],
+        },
+        options: {
+            scaleShowLabels : false,
+            elements: {
+                point:{
+                    radius: 0
+                }
+            },
+            responsive: false,
+            legend: {
+                    display: false
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        display: false,
+                        beginAtZero: true
+                    },
+                    gridLines: {
+                        display: false
+                    }
+                }],
+                xAxes: [{
+                    gridLines: {
+                        display: false
+                    }
+                }]
+            }
+        }
+    });
+    </script>
+    {% endfor %}
+
     {% endif %}
 {% endblock %}
+
