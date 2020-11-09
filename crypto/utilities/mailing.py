@@ -124,7 +124,7 @@ class MailGenerator:
         # market bot _above, _below
         mb_a, mb_b = self.results.get("MBA"), self.results.get("MBB")
         if mb_a or mb_b:
-            body_list.append("Market Bot: {.:2f}".format(mb_a or mb_b))
+            body_list.append("Market Bot: {:.2f}".format(mb_a or mb_b))
 
         # social bot _above, _below
         sb_a, sb_b = self.results.get("SBA"), self.results.get("SBB")

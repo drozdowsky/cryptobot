@@ -63,6 +63,7 @@ class Executor(object):
         except Exception as ex:
             self.logger.warning("process_result {}".format(str(ex)))
             traceback.print_exc()
+            print(str(result))
         else:
             # exit 0 == success
             if not result:
