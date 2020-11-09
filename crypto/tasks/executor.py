@@ -5,6 +5,7 @@ from django.utils import timezone
 from crypto.models import MarketHistoric, RuleSet, Trade, get_or_create_crypto_model
 from crypto.utilities.mailing import MailGenerator
 from crypto.utilities.rule_checker import RuleChecker
+import traceback
 
 
 def run_executor_task(mp, sp, crypto_model, logger):
@@ -61,6 +62,7 @@ class Executor(object):
             ).run()
         except Exception as ex:
             self.logger.warning("process_result {}".format(str(ex)))
+            traceback.print_exc()
         else:
             # exit 0 == success
             if not result:

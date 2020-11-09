@@ -133,7 +133,7 @@ class MailGenerator:
 
         # execution limit
         ex_l = self.results.get("EXL")
-        if ex_l:
+        if ex_l is not None:
             body_list.append("Remaining no. of executions: {}".format(ex_l))
 
     def get_past_price(self):
