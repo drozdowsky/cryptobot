@@ -74,10 +74,11 @@ class MailGenerator:
             "{0} price: {1}PLN {2}".format(
                 self.crypto.short_name, self.mp.mh.price, yesterday_price
             ),
-            '<h1 style="background-color: #a5d0ff;">&nbsp;</h1>',
         ]
 
         self.add_format_from_rule_checker(body_list)
+
+        body_list.append('</br><h1 style="background-color: #a5d0ff;">&nbsp;</h1>')
 
         return title_list, body_list
 
