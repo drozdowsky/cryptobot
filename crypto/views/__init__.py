@@ -373,6 +373,7 @@ class RemoveRuleView(View):
             response_data["rule"]["name"] = Rule.RULE_DESC_DICT[rule.type_of_rule]
             response_data["rule"]["short_name"] = rule.type_of_rule
             response_data["rule"]["id"] = rule.id
+            response_data["ruleset"]["name"] = rule.rule_set.name
 
         return render(request, self.template_name, response_data)
 

@@ -16,7 +16,11 @@
                 <td>
                      <select name="rtype">
                          {% for option, desc in rule_types %}
-                             <option value="{{ option }}">{{ desc }}</option>
+                            {% if option == rule.type_of_rule %}
+                                <option selected value="{{ option }}">{{ desc }}</option>
+                            {% else %}
+                                <option value="{{ option }}">{{ desc }}</option>
+                            {% endif %}
                          {% endfor %}
                     </select> 
                 </td>

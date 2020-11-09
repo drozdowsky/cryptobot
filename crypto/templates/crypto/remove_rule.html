@@ -9,7 +9,7 @@
     <div style="width:30%;min_width:300px;">
     <form method="post" action="{% url 'crypto:remove_rule' crypto ruleset.id rule.id %}">
         {% csrf_token %}
-        <h2>{{ crypto }}</h2><h3>{{ header }} {{ rule.name }}</h3>
+        <h2>{{ crypto }}'s {{ ruleset.name}}</h2><h3>{{ header }} {{ rule.name }}</h3>
         <table class="table">
             <tr>
                 <td>
