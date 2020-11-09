@@ -142,7 +142,7 @@ class RuleChecker(object):
 
         trades = self.ruleset.trades.count()
         remaining = rule.value - trades
-        if remaining < 0:
+        if remaining <= 0:
             return False
 
         return int(remaining - 1)

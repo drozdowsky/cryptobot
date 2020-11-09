@@ -69,7 +69,7 @@ class MailGenerator:
 
         body_list = [
             '<h1 style="background-color: #a5d0ff;">Cryptobot</h1>',
-            "<b>{}</b>:".format(str.upper(self.crypto.long_name)),
+            "<b>{}'s {}</b>:".format(str.upper(self.crypto.long_name), self.rs.name),
             # FIXME: hardcoded_currency
             "{0} price: {1}PLN {2}".format(
                 self.crypto.short_name, self.mp.mh.price, yesterday_price
