@@ -1,0 +1,7 @@
+*.log
+crypto/config.py
+*.sqlite3
+celerybeat.pid
+celerybeat-schedule
+__pycache__
+static/

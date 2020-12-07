@@ -1,0 +1,39 @@
+{% extends 'cryptobot/base.html' %}
+{% load crypto_extras %}
+{% block head %}
+{% endblock head %}
+
+{% block header %}
+/logs/{{ruleset.name}}
+{% endblock header %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <h2 style="margin-left:20px;">{{ ruleset.name }}</h2>
+        <table class="table">
+            <tr>
+                <th scope="col"></th>
+                <th scope="col"><a href="?order_by=date">Date</a></th>
+                <th scope="col"></th>
+                <th scope="col"><a href="?order_by=price">Price (PLN)</a></th>
+                <th scope="col"><a href="?order_by=amount">Amount ({{crypto.short_name}})</a></th>
+                <th scope="col"><a href="?order_by=type_of_trade">Type</a></th>
+                <th scope="col"></th>
+            </tr>
+        {% for log in trades %}
+            <tr>
+                <td></td>
+                <td>{{ log.date }}</td>
+                <td></td>
+                <td>{{ log.price }}PLN</td>
+                <td>{{ log.amount }}</td>
+                <td>{{ log.type_of_trade|reverse_trade }}</td>
+                <td></td>
+            </tr>
+        {% endfor %}
+        </table>
+        <div>
+            <a class="btn btn-secondary float-left m-2" href="{% url 'crypto:rulesets' crypto.long_name %}" role="button">Go back</a>
+        </div>
+    {% endif %}
+{% endblock %}

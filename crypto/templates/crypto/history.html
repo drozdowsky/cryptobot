@@ -1,0 +1,42 @@
+{% extends 'cryptobot/base.html' %}
+{% load crypto_extras %}
+{% block head %}
+{% endblock head %}
+
+{% block header %}
+/history/{{ruleset.name}}
+{% endblock header %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <h2 style="margin-left:20px;">{{ crypto }}</h2>
+        <table class="table">
+            <tr>
+                <th scope="col"></th>
+                <th scope="col" class="text-right"><a href="?order_by=date">Date</a></th>
+                <th scope="col"></th>
+                <th scope="col" class="text-right"><a href="?order_by=price">Price (PLN)</a></th>
+                <th scope="col" class="text-right"><a href="?order_by=asks_value">ASKS Value</a></th>
+                <th scope="col" class="text-right"><a href="?order_by=bids_value">BIDS Value</a></th>
+                <th scope="col" class="text-right"><a href="?order_by=avg_transaction_value">Avg. Transaction Value</a></th>
+            </tr>
+        {% for log in historic %}
+            <tr>
+                <td></td>
+                <td class="text-right">{{ log.date }}</td>
+                <td></td>
+                <td class="text-right">{{ log.price }}</td>
+                <td class="text-right">{{ log.asks_value }}</td>
+                <td class="text-right">{{ log.bids_value }}</td>
+                <td class="text-right">{{ log.avg_transaction_value }}</td>
+                <td></td>
+            </tr>
+        {% endfor %}
+        </table>
+        <div>
+            <a class="btn btn-secondary float-left m-2" href="{% url 'crypto:history' crypto page|add:"-1" %}" role="button">Prev. page</a>
+
+            <a class="btn btn-secondary float-right m-2" href="{% url 'crypto:history' crypto page|add:"1" %}" role="button">Next page</a>
+        </div>
+    {% endif %}
+{% endblock %}

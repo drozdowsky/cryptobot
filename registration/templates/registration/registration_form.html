@@ -1,0 +1,41 @@
+{% extends 'cryptobot/base.html' %}
+{% block head %}
+{% endblock head %}
+
+{% block content %}
+</br></br>
+<center>
+<h3>Registration</h3>
+
+{% if error %}
+{{error}}
+<br><br>
+{% endif %}
+
+<form action="/accounts/register/" method="post">{% csrf_token %}
+<table>
+<tr>
+    <td><p>{{ form.username.label_tag }}</p></td>
+    <td>{{ form.username }}</td>
+</tr>
+<tr>
+    <td><p>{{ form.email.label_tag }}</p></td>
+    <td>{{ form.email }}</td>
+</tr>
+<tr>
+    <td><p>{{ form.password1.label_tag }}</p></td>
+    <td>{{ form.password1 }}</td>
+</tr>
+<tr>
+    <td><p>{{ form.password2.label_tag }}</p></td>
+    <td>{{ form.password2 }}</td>
+</tr>
+<tr>
+    <td></td><td class="text_allign_right"><input name="register" type="submit" value="Register" /></td>
+</tr>
+</table>
+</form>
+<a href="{% url 'registration:login' %}">Have account? Login</a>
+
+</center>
+{% endblock %}
