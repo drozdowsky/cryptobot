@@ -1,7 +1,7 @@
 {% load static %}
 <!doctype html>
 <html lang="en">
-    <head>
+    <head style="min-height: 100vh">
         <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -30,8 +30,8 @@
         {% block head %}
         {% endblock head %}
     </head>
-    <body>
-        <div>
+    <body style="min-height: 90vh">
+        <div style="min-height: 80vh">
             {% block content %}
             {% endblock %}
         </div>
@@ -50,11 +50,8 @@
             {% block help %}
             {% endblock help %}
         </div>
-
-    </body>
-    <div>
         <center>
             Crafted by <a href="https://github.com/drozdowsky">@drozdowsky</a> | <a href="{% url 'registration:privacy' %}">Privacy Policy</a>
         </center>
-    </div>
+    </body>
 </html>
