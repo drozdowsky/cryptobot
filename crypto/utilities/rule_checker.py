@@ -29,16 +29,18 @@ class RuleChecker(object):
         return results
 
     def get_below(self, rule):
+        latest_trade = self._get_latest_trade()
         _last_value = float(self.mp.get_last_value())
         if rule.value > _last_value:
-            return _last_value
+            return latest_trade.price
 
         return False
 
     def get_above(self, rule):
+        latest_trade = self._get_latest_trade()
         _last_value = float(self.mp.get_last_value())
         if rule.value < _last_value:
-            return _last_value
+            return latest_trade.price
 
         return False
 
