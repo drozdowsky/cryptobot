@@ -20,7 +20,7 @@ class Executor(object):
         self.logger = logger
         self.past_price = (
             MarketHistoric.objects.filter(
-                date__lte=timezone.now() - timedelta(hours=24)
+                crypto=self.crypto, date__lte=timezone.now() - timedelta(hours=24)
             )
             .order_by("-date")
             .first()
@@ -68,5 +68,7 @@ class Executor(object):
             # exit 0 == success
             if not result:
                 Trade.objects.create(
-                    type_of_trade=type_of_ruleset, price=self.mp.mh.price, rule_set=rs,
+                    type_of_trade=type_of_ruleset,
+                    price=self.mp.mh.price,
+                    rule_set=rs,
                 )
