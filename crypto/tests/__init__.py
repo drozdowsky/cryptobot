@@ -26,7 +26,10 @@ class BaseTest(TestCase):
             response_json={},
         )
 
-        self.sh = SocialHistoric.objects.create(crypto=self.crypto, gtrends_top_7d=1.0,)
+        self.sh = SocialHistoric.objects.create(
+            crypto=self.crypto,
+            gtrends_top_7d=1.0,
+        )
 
         self.ruleset = RuleSet.objects.create(
             name="Test ruleset",

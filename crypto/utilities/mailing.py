@@ -62,8 +62,8 @@ class MailGenerator:
     def generate_mail(self):
         yesterday_price = self.get_past_price()
         title_list = [
-            "[{}: {}]".format(self.rs.type_of_ruleset, self.rs.name),
-            "{}".format(self.crypto.long_name),
+            "[{}: {}]".format(self.rs.type_of_ruleset, self.crypto.short_name),
+            "{}".format(self.rs.name),
             yesterday_price,
         ]
 
